@@ -5,9 +5,18 @@ Proto je aplikace rozšiřitelná o vlastní tréninky a i bouchači z FBB řase
 Aplikace podporuje češtinu i angličtinu (což nelimituje jazyk vlastních tréninnku) a krom aplikace pro telefon  nabízí i klienta pro pc ( https://github.com/judovana/FlashBalknaSwing) , který má  v sobě barevnou konzolovu - poctivě X-less - textovou verzi pro programátory a šílence.
 Zde se i tvrdě pracuje na editoru vlastních tréninků (nedočkavci si ho hold teď musí napsat c XML a zabalit s obrázky (a dokonce i zvuky pokud chtějí!). Ukázka je https://github.com/judovana/FlashBalknaTestPlugin )
 
+Aplikace může požadovat sítová práva k přístupu na web.  Tyto jsou pouz epro stahování pluginů,  můžete je bez problémů zakázat/odebrat
+
+
+
+
+
+
 Application now provides easy, advanced and hard trainings. Voice and images are guiding you through whole training. With some luck they will set to to correct training wave and you will need no app to train. FBB's balkba will be all you need.
 
 That is why the application is extendable by custom trainings and even FBB crew may add new in some time. You can select voice, shrink or prolong training or its parts. You can also view training in book-like format
 
 Application supports CZ and EN language (without limitations to custom trainings) and except mobile app it provides also PC client ( https://github.com/judovana/FlashBalknaSwing ), which have colourful console - true X less -  text version for hackers and mad men.
 Here is also hard work made on editor of trainings (not finished, if you wont custom training now, you must pack XMLfiles and images (and even sounds if you wish!) together. Example is at https://github.com/judovana/FlashBalknaTestPlugin )
+
+This app may request network permissions. Those are for plugin uploading and nothing else. Feel free to revoke them.
