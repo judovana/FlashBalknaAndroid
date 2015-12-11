@@ -73,10 +73,12 @@ public class TrainingSelector extends AppCompatActivity {
 
     public static MainTimer run;
     public static Training src;
-    public static  String lastHtmlFile;
+    public static String lastHtmlFile;
 
-    private  OnTouchListenerImpl touch;
+    private OnTouchListenerImpl touch;
     private Button startTraining;
+    static TrainingSelector hack;
+    ListView listview;
 
 
     @Override
@@ -87,6 +89,7 @@ public class TrainingSelector extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TrainingSelector.hack = this;
 //http://developer.android.com/reference/android/os/StrictMode.html
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                 .penaltyLog()
@@ -99,12 +102,7 @@ public class TrainingSelector extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TypedArray array = getTheme().obtainStyledAttributes(new int[] {
-                android.R.attr.colorBackground,
-                android.R.attr.textColorPrimary,
-        });
-
-        final ListView listview = (ListView) findViewById(R.id.listView);
+        listview = (ListView) findViewById(R.id.listView);
         startTraining = (Button) findViewById(R.id.startTrainingButton);
         final EditText memo = (EditText) findViewById(R.id.editText);
         final ImageView img = (ImageView) findViewById(R.id.imageView);
@@ -114,30 +112,14 @@ public class TrainingSelector extends AppCompatActivity {
         img.setOnTouchListener(touch);
         File dataDir = new File(this.getBaseContext().getApplicationInfo().dataDir);
         Model.createrModel(dataDir, new AndroidWavProvider());
-        final Model model = Model.getModel();
-        this.setTitle(model.getTitle());
-        final List<Training> trainings = model.getTraingNames();
-        memo.setText(model.getDefaultStory()+ getAndroidGuiStory());
+        this.setTitle(Model.getModel().getTitle());
+        memo.setText(Model.getModel().getDefaultStory() + getAndroidGuiStory());
         showedImages = new ArrayList<>();
         showedImages.add(ImgUtils.getDefaultImage());
         showedImagesPoint = 0;
         touch.onTouchImpl(100, 10, MotionEvent.ACTION_DOWN);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter(this,
-                android.R.layout.simple_list_item_1, trainings){
-
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View a = super.getView(position, convertView, parent);
-                if (position == lastValidPosition) {
-                    a.setBackgroundColor(Color.CYAN);
-                } else {
-                    a.setBackgroundColor(array.getColor(0, 0xFF00FF));
-                }
-                return a;
-            }
-
-        };
-        listview.setAdapter(adapter);
+        reloadTrainings();
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -149,10 +131,10 @@ public class TrainingSelector extends AppCompatActivity {
                 final Training item = (Training) parent.getItemAtPosition(position);
                 //final Training item = (Training) parent.getSelectedItem();
                 if (item == null) {
-                    memo.setText(model.getDefaultStory());
+                    memo.setText(Model.getModel().getDefaultStory());
                     showedImages = new ArrayList<>();
                     showedImages.add(ImgUtils.getDefaultImage());
-                    memo.setText(model.getDefaultStory());
+                    memo.setText(Model.getModel().getDefaultStory());
                     showedImagesPoint = 0;
                     startTraining.setEnabled(false);
                 } else {
@@ -293,10 +275,31 @@ public class TrainingSelector extends AppCompatActivity {
     }
 
 
-
     final void setLocales() {
         setTitle(Model.getModel().getTitle());
         startTraining.setText(SwingTranslator.R("StartTraining"));
     }
 
+    public void reloadTrainings() {
+
+        final TypedArray array = getTheme().obtainStyledAttributes(new int[]{
+                android.R.attr.colorBackground,
+                android.R.attr.textColorPrimary,
+        });
+        final ArrayAdapter<String> adapter = new ArrayAdapter(this,
+                android.R.layout.simple_list_item_1, Model.getModel().getTraingNames()) {
+
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View a = super.getView(position, convertView, parent);
+                if (position == lastValidPosition) {
+                    a.setBackgroundColor(Color.CYAN);
+                } else {
+                    a.setBackgroundColor(array.getColor(0, 0xFF00FF));
+                }
+                return a;
+            }
+
+        };
+        listview.setAdapter(adapter);
+    }
 }

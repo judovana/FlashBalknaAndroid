@@ -86,10 +86,13 @@ public class RunTraining extends AppCompatActivity {
     Runnable exercseShiftedLIstener;
     Runnable secondListener;
 
+    static RunTraining hack;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hack = this;
         setContentView(R.layout.activity_run_training);
 
         final TypedArray array = getTheme().obtainStyledAttributes(new int[]{
@@ -336,7 +339,7 @@ public class RunTraining extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!Model.getModel().isAllowSkipping()) {
-                    //return;
+                    return;
                 }
                 boolean was = Model.getModel().isLaud();
                 Model.getModel().setLaud(false);
@@ -350,7 +353,7 @@ public class RunTraining extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!Model.getModel().isAllowSkipping()) {
-                    //return;
+                    return;
                 }
                 boolean was = Model.getModel().isLaud();
                 Model.getModel().setLaud(false);

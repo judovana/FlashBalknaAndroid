@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,16 +12,24 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="org.fbb.balkna.android.SettingsActivity"
     tools:showIn="@layout/activity_settings">
+
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:fadeScrollbars="false"
         >
 
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:weightSum="1">
 
         <CheckBox
@@ -41,7 +50,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/auitoiterateSpinner"
             android:max="100"
-            android:progress="2" />
+            android:progress="100" />
 
         <CheckBox
             android:layout_width="match_parent"
@@ -54,7 +63,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView" />
+            android:id="@+id/soundPackLabel" />
 
         <Spinner
             android:layout_width="match_parent"
@@ -66,20 +75,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button" />
+            android:id="@+id/testSoundsButton" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button2" />
+            android:id="@+id/setSoundPackButton" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView2" />
+            android:id="@+id/languageLabel" />
 
         <Spinner
             android:layout_width="match_parent"
@@ -91,149 +100,151 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button3" />
+            android:id="@+id/changeLanguageButton" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView3" />
+            android:id="@+id/tutorialLabel" />
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New CheckBox"
-            android:id="@+id/checkBox" />
+            android:id="@+id/pauseOnExercise" />
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New CheckBox"
-            android:id="@+id/checkBox2" />
+            android:id="@+id/pauseOnChange" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView4" />
+            android:id="@+id/cheaterLabel" />
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New CheckBox"
-            android:id="@+id/checkBox3" />
+            android:id="@+id/allowSkipping" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView5" />
+            android:id="@+id/creditsLabel" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button4" />
+            android:id="@+id/closeButton" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button5" />
+            android:id="@+id/exportButton"
+            android:enabled="true" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button6" />
+            android:id="@+id/downloadButton" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText2"
+            android:id="@+id/editText1"
             android:inputType="textNoSuggestions|textUri|text" />
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New CheckBox"
-            android:id="@+id/saveOCheckBox1" />
+            android:id="@+id/saveForOfline"
+            android:checked="true" />
 
         <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="New Button"
-        android:id="@+id/button7" />
+        android:id="@+id/managePluginsButton" />
 
         <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/textView6" />
+        android:id="@+id/exercisesModLabel" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/seekText1" />
+            android:id="@+id/trainingsModLabel" />
 
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/seek1"
-            android:max="100"
-            android:progress="1" />
+            android:id="@+id/trainingsModLabelSeek"
+            android:max="200"
+            android:progress="200" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/seekText2" />
+            android:id="@+id/pausesModLabel" />
 
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/seek2"
-            android:max="100"
-            android:progress="1" />
+            android:id="@+id/pausesModLabelSeek"
+            android:max="200"
+            android:progress="200" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/seekText3" />
+            android:id="@+id/restsModLabel" />
 
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/seek3"
-            android:max="100"
-            android:progress="1" />
+            android:id="@+id/restsModLabelSeek"
+            android:max="200"
+            android:progress="200" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/seekText4" />
+            android:id="@+id/iterationsModLabel" />
 
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/seek4"
-            android:max="100"
-            android:progress="1" />
+            android:id="@+id/iterationsModLabelSeek"
+            android:max="200"
+            android:progress="200" />
 
 
     </LinearLayout>
