@@ -1,5 +1,6 @@
 package org.fbb.balkna.android;
 
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,6 +33,7 @@ import org.fbb.balkna.model.merged.uncompressed.timeUnits.BigRestTime;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.PausaTime;
 import org.fbb.balkna.model.primitives.Exercise;
 import org.fbb.balkna.model.utils.TimeUtils;
+import org.fbb.balkna.swing.locales.SwingTranslator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -357,6 +359,7 @@ public class RunTraining extends AppCompatActivity {
                 Model.getModel().setLaud(was);
             }
         });
+        setLocales();
         runAllListeners();
 
     }
@@ -379,21 +382,6 @@ public class RunTraining extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     private void runAllListeners() {
         boolean was = Model.getModel().isLaud();
@@ -410,4 +398,33 @@ public class RunTraining extends AppCompatActivity {
         }
     }
 
+
+
+    void setLocales() {
+        skip.setText(SwingTranslator.R("skipForward"));
+        back.setText(SwingTranslator.R("jumpBack"));
+        this.setTitle(TrainingSelector.src.getName());
+        // not localised because of logic
+        //startButton.setText(SwingTranslator.R("Start"));
+        //validate();
+        //repaint();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

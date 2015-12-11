@@ -66,6 +66,7 @@
                         android:text="Small Text"
                         android:id="@+id/allTime"
                         android:textAlignment="textEnd"
+                        android:gravity="end"
                         android:layout_above="@+id/nextTitle"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
@@ -100,6 +101,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/imgAndDesc"
                         android:layout_alignParentEnd="false"
+                        android:layout_alignParentRight="false"
                         android:layout_alignParentBottom="true">
 
                         <ImageView
@@ -126,6 +128,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
+                android:fadeScrollbars="false"
                 android:id="@+id/trainingItems" />
         </LinearLayout>
 

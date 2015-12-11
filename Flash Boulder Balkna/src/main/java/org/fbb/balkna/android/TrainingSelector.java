@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,13 +27,11 @@ import org.fbb.balkna.model.Model;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
 import org.fbb.balkna.model.primitives.Training;
+import org.fbb.balkna.swing.locales.SwingTranslator;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import dalvik.system.DalvikPluginProvider;
 
 public class TrainingSelector extends AppCompatActivity {
 
@@ -66,19 +63,20 @@ public class TrainingSelector extends AppCompatActivity {
                 }
                 img.setImageBitmap(showedImages.get(showedImagesPoint));
             }
-            return true;
+            return false;
         }
     }
 
-    List<Bitmap> showedImages;
-    int showedImagesPoint = 0;
-    int lastValidPosition = -1;
+    private List<Bitmap> showedImages;
+    private int showedImagesPoint = 0;
+    private int lastValidPosition = -1;
 
     public static MainTimer run;
     public static Training src;
     public static  String lastHtmlFile;
 
-    OnTouchListenerImpl touch;
+    private  OnTouchListenerImpl touch;
+    private Button startTraining;
 
 
     @Override
@@ -107,7 +105,7 @@ public class TrainingSelector extends AppCompatActivity {
         });
 
         final ListView listview = (ListView) findViewById(R.id.listView);
-        final Button startTraining = (Button) findViewById(R.id.startTrainingButton);
+        startTraining = (Button) findViewById(R.id.startTrainingButton);
         final EditText memo = (EditText) findViewById(R.id.editText);
         final ImageView img = (ImageView) findViewById(R.id.imageView);
         memo.setKeyListener(null);
@@ -115,19 +113,11 @@ public class TrainingSelector extends AppCompatActivity {
         touch = new OnTouchListenerImpl(img);
         img.setOnTouchListener(touch);
         File dataDir = new File(this.getBaseContext().getApplicationInfo().dataDir);
-        Model.createrModel(dataDir, new AndroidWavProvider(), new DalvikPluginProvider());
+        Model.createrModel(dataDir, new AndroidWavProvider());
         final Model model = Model.getModel();
-        try {
-            //TODO
-            //model.getModel().reload(true, new URL("https://github.com/judovana/FlashBalknaTestPlugin/releases/download/FlashBalknaTestPlugin-1.0/FlashBalknaTestPlugin_1.0.jar"));
-        } catch (Exception ex) {
-            //java.lang.ClassCastException: dalvik.system.PathClassLoader cannot be cast to java.net.URLClassLoader
-            ex.printStackTrace();
-        }
-
         this.setTitle(model.getTitle());
         final List<Training> trainings = model.getTraingNames();
-        memo.setText(model.getDefaultStory());
+        memo.setText(model.getDefaultStory()+ getAndroidGuiStory());
         showedImages = new ArrayList<>();
         showedImages.add(ImgUtils.getDefaultImage());
         showedImagesPoint = 0;
@@ -155,7 +145,7 @@ public class TrainingSelector extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 lastValidPosition = position;
-                ((ArrayAdapter)(listview.getAdapter())).notifyDataSetChanged();
+                ((ArrayAdapter) (listview.getAdapter())).notifyDataSetChanged();
                 final Training item = (Training) parent.getItemAtPosition(position);
                 //final Training item = (Training) parent.getSelectedItem();
                 if (item == null) {
@@ -191,7 +181,7 @@ public class TrainingSelector extends AppCompatActivity {
 
                     List<BasicTime> l = t.getMergedExercises(Model.getModel().getTimeShift()).decompress();
                     l.add(0, Model.getModel().getWarmUp());
-                    if (run!=null){
+                    if (run != null) {
                         run.stop();
                     }
                     run = new MainTimer(l);
@@ -216,12 +206,31 @@ public class TrainingSelector extends AppCompatActivity {
                         lastHtmlFile = result.toURI().toURL().toString();
                         startActivity(i);
                     }
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
                 return true;
             }
         });
+        img.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://flashbb.cz/aktualne"));
+                startActivity(browserIntent);
+                return false;
+            }
+        });
+        setLocales();
+
+    }
+
+    private String getAndroidGuiStory() {
+        return "\n" + SwingTranslator.R("AndroidInfoLine1")
+                + "\n" + SwingTranslator.R("AndroidInfoLine2")
+                + "\n" + SwingTranslator.R("AndroidInfoLine3")
+                + "\n" + SwingTranslator.R("AndroidInfoLine4")
+                + "\n" + SwingTranslator.R("AndroidInfoLine5")
+                + "\n" + SwingTranslator.R("AndroidInfoLine6");
     }
 
     @Override
@@ -240,6 +249,8 @@ public class TrainingSelector extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(i);
             return true;
         }
 
@@ -280,4 +291,12 @@ public class TrainingSelector extends AppCompatActivity {
             }
         }
     }
+
+
+
+    final void setLocales() {
+        setTitle(Model.getModel().getTitle());
+        startTraining.setText(SwingTranslator.R("StartTraining"));
+    }
+
 }
