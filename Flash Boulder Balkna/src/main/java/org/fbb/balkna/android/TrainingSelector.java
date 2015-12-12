@@ -86,6 +86,7 @@ public class TrainingSelector extends AppCompatActivity {
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,8 +100,15 @@ public class TrainingSelector extends AppCompatActivity {
                 .build());
 
         setContentView(R.layout.activity_training_selector);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://flashbb.cz/aktualne"));
+                startActivity(browserIntent);
+            }
+        });
 
         listview = (ListView) findViewById(R.id.listView);
         startTraining = (Button) findViewById(R.id.startTrainingButton);

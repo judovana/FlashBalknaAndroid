@@ -3,6 +3,8 @@ package org.fbb.balkna.android;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -95,6 +97,8 @@ public class SettingsActivity extends AppCompatActivity {
         SeekBar trainingsModLabelSeek = (SeekBar) findViewById(R.id.trainingsModLabelSeek);
         SeekBar pausesModLabelSeek = (SeekBar) findViewById(R.id.pausesModLabelSeek);
         SeekBar restsModLabelSeek = (SeekBar) findViewById(R.id.restsModLabelSeek);
+
+        exportButton.setEnabled(false);
 
         iterationsModLabelSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -321,21 +325,14 @@ public class SettingsActivity extends AppCompatActivity {
                     ex.printStackTrace();
                     try {
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
-
                         // set title
                         alertDialogBuilder.setTitle("Error");
                         alertDialogBuilder.setCancelable(true);
-
                         // set dialog message
                         alertDialogBuilder
                                 .setMessage(ex.getMessage());
-
-
                         // create alert dialog
                         AlertDialog alertDialog = alertDialogBuilder.create();
-
-                        // show it
-
                         alertDialog.show();
                     } catch (Exception eex) {
                         eex.printStackTrace();
@@ -344,7 +341,36 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        TextView info = (TextView) findViewById(R.id.creditsLabel);
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://flashbb.cz/aktualne"));
+                startActivity(browserIntent);
+            }
+        });
 
+
+        managePluginsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Model.getModel().getPluginsDir().exists() && Model.getModel().getPluginsDir().list().length > 0) {
+                    Intent i = new Intent(getApplicationContext(), ManagePlugins.class);
+                    startActivity(i);
+                } else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                    // set title
+                    alertDialogBuilder.setTitle("Error");
+                    alertDialogBuilder.setCancelable(true);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("No Plugins!!");
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+            }
+        });
         setLocales();
 
         auitoiterateSpinner.setProgress(Model.getModel().getImagesOnTimerSpeed());

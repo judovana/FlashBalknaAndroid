@@ -76,7 +76,8 @@ public class RunTraining extends AppCompatActivity {
 
     List<Bitmap> showedImages;
     int showedImagesPoint = 0;
-    static boolean isImageInTimer;
+    boolean isImageInTimer;
+    int timerImageCounter = 0;
 
 
     Button start;
@@ -88,11 +89,40 @@ public class RunTraining extends AppCompatActivity {
 
     static RunTraining hack;
 
+    Thread t = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    if (Model.getModel().getImagesOnTimerSpeed()>0 && isImageInTimer && showedImages.size() > 1) {
+                        Thread.sleep(Model.getModel().getImagesOnTimerSpeed() * 1000);
+                        timerImageCounter++;
+                        if (timerImageCounter >= showedImages.size()) {
+                            timerImageCounter = 0;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(timerImageCounter)));
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hack = this;
+
+        t.setDaemon(true);
+        if (!t.isAlive()) {
+            t.start();
+        }
         setContentView(R.layout.activity_run_training);
 
         final TypedArray array = getTheme().obtainStyledAttributes(new int[]{
@@ -112,7 +142,7 @@ public class RunTraining extends AppCompatActivity {
         final LinearLayout imgAndDesc = (LinearLayout) findViewById(R.id.imgAndDesc);
         final EditText description = (EditText) findViewById(R.id.editText);
         start = (Button) findViewById(R.id.startButton);
-        skip= (Button) findViewById(R.id.skipButton);
+        skip = (Button) findViewById(R.id.skipButton);
         back = (Button) findViewById(R.id.backButton);
         setSupportActionBar(toolbar);
         this.setTitle(TrainingSelector.src.getName());
@@ -395,12 +425,12 @@ public class RunTraining extends AppCompatActivity {
         Model.getModel().setLaud(was);
     }
 
-    public void setMainBg(){
+    public void setMainBg() {
         if (isImageInTimer) {
-            timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(showedImagesPoint)));
+            timerImageCounter = showedImagesPoint;
+            timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(timerImageCounter)));
         }
     }
-
 
 
     void setLocales() {
@@ -430,4 +460,6 @@ public class RunTraining extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

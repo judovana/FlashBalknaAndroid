@@ -154,7 +154,7 @@
             android:layout_height="wrap_content"
             android:text="New Button"
             android:id="@+id/exportButton"
-            android:enabled="true" />
+            android:enabled="false" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
