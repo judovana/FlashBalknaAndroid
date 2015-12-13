@@ -79,6 +79,7 @@ public class TrainingSelector extends AppCompatActivity {
     private Button startTraining;
     static TrainingSelector hack;
     ListView listview;
+    ImageView img;
 
 
     @Override
@@ -113,7 +114,7 @@ public class TrainingSelector extends AppCompatActivity {
         listview = (ListView) findViewById(R.id.listView);
         startTraining = (Button) findViewById(R.id.startTrainingButton);
         final EditText memo = (EditText) findViewById(R.id.editText);
-        final ImageView img = (ImageView) findViewById(R.id.imageView);
+        img = (ImageView) findViewById(R.id.imageView);
         memo.setKeyListener(null);
         startTraining.setEnabled(false);
         touch = new OnTouchListenerImpl(img);
@@ -210,6 +211,11 @@ public class TrainingSelector extends AppCompatActivity {
                 return false;
             }
         });
+        if (Model.getModel().isRatioForced()){
+            img.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        } else {
+            img.setScaleType(ImageView.ScaleType.FIT_XY);
+        }
         setLocales();
 
     }

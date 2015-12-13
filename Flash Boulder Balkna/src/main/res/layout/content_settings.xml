@@ -58,6 +58,18 @@
             android:text="New CheckBox"
             android:id="@+id/mute" />
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New CheckBox"
+            android:id="@+id/invert" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New CheckBox"
+            android:id="@+id/allowLayout" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

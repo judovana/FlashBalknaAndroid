@@ -31,24 +31,26 @@
         <LinearLayout
             android:id="@+id/linearLayoutVertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:layout_above="@+id/startTrainingButton"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:id="@+id/imageView"
-                android:scaleType="center" />
+                android:scaleType="fitCenter"
+                android:layout_weight="0.5" />
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:inputType="textNoSuggestions|textMultiLine"
                 android:ems="10"
                 android:id="@+id/editText"
-                android:editable="false" />
+                android:editable="false"
+                android:layout_weight="0.5" />
         </LinearLayout>
     </LinearLayout>
 

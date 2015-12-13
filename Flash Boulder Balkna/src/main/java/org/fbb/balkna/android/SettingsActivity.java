@@ -12,12 +12,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.fbb.balkna.Packages;
 import org.fbb.balkna.model.Model;
+import org.fbb.balkna.model.Settings;
 import org.fbb.balkna.model.SoundProvider;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
@@ -32,6 +34,8 @@ public class SettingsActivity extends AppCompatActivity {
     private CheckBox pauseOnChange;
     private CheckBox allowSkipping;
     private CheckBox saveForOfline;
+    private CheckBox invert;
+    private CheckBox allowLayout;
     private TextView autoIterateLabel;
     private SeekBar auitoiterateSpinner;
     private TextView languageLabel;
@@ -68,6 +72,8 @@ public class SettingsActivity extends AppCompatActivity {
         pauseOnExercise = (CheckBox) findViewById(R.id.pauseOnExercise);
         allowSkipping = (CheckBox) findViewById(R.id.allowSkipping);
         saveForOfline = (CheckBox) findViewById(R.id.saveForOfline);
+        allowLayout = (CheckBox) findViewById(R.id.allowLayout);
+        invert = (CheckBox) findViewById(R.id.invert);
         mute = (CheckBox) findViewById(R.id.mute);
         autoIterateLabel = (TextView) findViewById(R.id.autoIterateLabel);
         auitoiterateSpinner = (SeekBar) findViewById(R.id.auitoiterateSpinner);
@@ -194,6 +200,17 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Model.getModel().setRatioForced(ratioCheckbox.isChecked());
+                if (Model.getModel().isRatioForced()){
+                    TrainingSelector.hack.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    if (RunTraining.hack!=null) {
+                        RunTraining.hack.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
+                } else {
+                    TrainingSelector.hack.img.setScaleType(ImageView.ScaleType.FIT_XY);
+                    if (RunTraining.hack!=null) {
+                        RunTraining.hack.img.setScaleType(ImageView.ScaleType.FIT_XY);
+                    }
+                }
             }
         });
 
@@ -204,6 +221,23 @@ public class SettingsActivity extends AppCompatActivity {
                 Model.getModel().setLaud(!mute.isChecked());
             }
         });
+
+        allowLayout.setChecked(Settings.getSettings().isAllowScreenChange());
+        allowLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Settings.getSettings().setAllowScreenChange(allowLayout.isChecked());
+            }
+        });
+
+        invert.setChecked(Settings.getSettings().isInvertScreenCompress());
+        invert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Settings.getSettings().setInvertScreenCompress(invert.isChecked());
+            }
+        });
+
 
         allowSkipping.setChecked(Model.getModel().isAllowSkipping());
         allowSkipping.setOnClickListener(new View.OnClickListener() {
@@ -417,6 +451,8 @@ public class SettingsActivity extends AppCompatActivity {
         pausesModLabel.setText("  - " + SwingTranslator.R("PauseTimesModifier"));
         restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier"));
         saveForOfline.setText(SwingTranslator.R("SaveForOfline"));
+        allowLayout.setText(SwingTranslator.R("alowScreenChange"));
+        invert.setText(SwingTranslator.R("invertScreenLayout"));
 
     }
 }

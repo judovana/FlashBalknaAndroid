@@ -6,11 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.fbb.balkna.model.Model;
+import org.fbb.balkna.model.Settings;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BigRestTime;
@@ -86,6 +89,7 @@ public class RunTraining extends AppCompatActivity {
     TextView timerLabel;
     Runnable exercseShiftedLIstener;
     Runnable secondListener;
+    ImageView img;
 
     static RunTraining hack;
 
@@ -94,7 +98,7 @@ public class RunTraining extends AppCompatActivity {
         public void run() {
             while (true) {
                 try {
-                    if (Model.getModel().getImagesOnTimerSpeed()>0 && isImageInTimer && showedImages.size() > 1) {
+                    if (Model.getModel().getImagesOnTimerSpeed() > 0 && isImageInTimer && showedImages.size() > 1) {
                         Thread.sleep(Model.getModel().getImagesOnTimerSpeed() * 1000);
                         timerImageCounter++;
                         if (timerImageCounter >= showedImages.size()) {
@@ -133,7 +137,7 @@ public class RunTraining extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final ListView trainingItems = (ListView) findViewById(R.id.trainingItems);
         final EditText memo = (EditText) findViewById(R.id.editText);
-        final ImageView img = (ImageView) findViewById(R.id.imageView);
+        img = (ImageView) findViewById(R.id.imageView);
         timerLabel = (TextView) findViewById(R.id.timer);
         final TextView cross = (TextView) findViewById(R.id.cross);
         final TextView allTime = (TextView) findViewById(R.id.allTime);
@@ -147,6 +151,7 @@ public class RunTraining extends AppCompatActivity {
         setSupportActionBar(toolbar);
         this.setTitle(TrainingSelector.src.getName());
         memo.setKeyListener(null);
+
 
         if (!TrainingSelector.run.isStopped()) {
             start.setText(Model.getModel().getPauseTitle());
@@ -201,6 +206,9 @@ public class RunTraining extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return;
+                }
                 trainingItems.setVisibility(View.GONE);
             }
 
@@ -209,6 +217,9 @@ public class RunTraining extends AppCompatActivity {
         description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return;
+                }
                 imgAndDesc.setVisibility(View.GONE);
 
             }
@@ -328,6 +339,9 @@ public class RunTraining extends AppCompatActivity {
         img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return false;
+                }
                 timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(showedImagesPoint)));
                 isImageInTimer = true;
                 return false;
@@ -336,6 +350,9 @@ public class RunTraining extends AppCompatActivity {
         timerLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return;
+                }
                 trainingItems.setVisibility(View.VISIBLE);
                 imgAndDesc.setVisibility(View.VISIBLE);
             }
@@ -343,6 +360,9 @@ public class RunTraining extends AppCompatActivity {
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return;
+                }
                 trainingItems.setVisibility(View.VISIBLE);
                 imgAndDesc.setVisibility(View.VISIBLE);
             }
@@ -351,6 +371,9 @@ public class RunTraining extends AppCompatActivity {
         timerLabel.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return false;
+                }
                 timerLabel.setBackgroundResource(0);
                 isImageInTimer = false;
                 return false;
@@ -359,6 +382,9 @@ public class RunTraining extends AppCompatActivity {
         cross.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if (!Settings.getSettings().isAllowScreenChange()){
+                    return false;
+                }
                 timerLabel.setBackgroundResource(0);
                 isImageInTimer = false;
                 return false;
@@ -392,8 +418,34 @@ public class RunTraining extends AppCompatActivity {
                 Model.getModel().setLaud(was);
             }
         });
+
+
+        if (Model.getModel().isRatioForced()){
+            img.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        } else {
+            img.setScaleType(ImageView.ScaleType.FIT_XY);
+        }
         setLocales();
         runAllListeners();
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        long w = size.x;
+        long h = size.y;
+
+        if (
+                (w * h < 800l * 600l && !Settings.getSettings().isInvertScreenCompress())
+                        ||
+                (w * h >= 800l * 600l && Settings.getSettings().isInvertScreenCompress())
+                ) {
+            trainingItems.setVisibility(View.GONE);
+            imgAndDesc.setVisibility(View.GONE);
+            isImageInTimer = true;
+            setMainBg();
+        }
+
 
     }
 
