@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Flash Boulder Balkna</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Trainig Settings</string>
+    <string name="action_view">Appearence</string>
     <string name="StartTraining">Start Training</string>
     <string name="title_activity_run_training">Run Training</string>
 

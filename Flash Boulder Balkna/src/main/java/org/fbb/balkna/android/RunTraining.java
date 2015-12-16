@@ -1,14 +1,13 @@
 package org.fbb.balkna.android;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,11 +24,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.fbb.balkna.model.Model;
-import org.fbb.balkna.model.Settings;
+import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BigRestTime;
@@ -45,10 +43,10 @@ import dalvik.system.PathClassLoader;
 
 public class RunTraining extends AppCompatActivity {
 
+    private  RunTraining self;
 
     private class OnTouchListenerImpl implements View.OnTouchListener {
         private final ImageView img;
-
         public OnTouchListenerImpl(ImageView src) {
             this.img = src;
         }
@@ -93,6 +91,8 @@ public class RunTraining extends AppCompatActivity {
 
     static RunTraining hack;
 
+    private Menu menu;
+
     Thread t = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -122,7 +122,7 @@ public class RunTraining extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hack = this;
-
+        self = this;
         t.setDaemon(true);
         if (!t.isAlive()) {
             t.start();
@@ -464,6 +464,11 @@ public class RunTraining extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_training_selector, menu);
+        this.menu = menu;
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        MenuItem appearence = menu.findItem(R.id.action_view);
+        settings.setTitle(SwingTranslator.R("settingsTab"));
+        appearence.setTitle(SwingTranslator.R("appearenceTab"));
         return true;
     }
 
@@ -491,8 +496,12 @@ public class RunTraining extends AppCompatActivity {
         this.setTitle(TrainingSelector.src.getName());
         // not localised because of logic
         //startButton.setText(SwingTranslator.R("Start"));
-        //validate();
-        //repaint();
+        if (menu != null) {
+            MenuItem settings = menu.findItem(R.id.action_settings);
+            MenuItem appearence = menu.findItem(R.id.action_view);
+            settings.setTitle(SwingTranslator.R("settingsTab"));
+            appearence.setTitle(SwingTranslator.R("appearenceTab"));
+        }
     }
 
 
@@ -509,9 +518,54 @@ public class RunTraining extends AppCompatActivity {
             startActivity(i);
             return true;
         }
+        if (id == R.id.action_view) {
+//            Intent i = new Intent(getApplicationContext(), AppearenceActivity.class);
+//            startActivity(i);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public void onBackPressed() {
+        try {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+            // set title
+            alertDialogBuilder.setTitle("!!!No!Nie!Nein!Ne!!!");
+            alertDialogBuilder.setCancelable(true);
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage(SwingTranslator.R("AndroidBackTraining"));
+
+            alertDialogBuilder
+                    .setPositiveButton(SwingTranslator.R("AndroidBackYes"), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            RunTraining.super.onBackPressed();
+                            TrainingSelector.run.stop();
+                        }
+                    });
+            alertDialogBuilder.setNegativeButton(SwingTranslator.R("AndroidBackNo"), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            alertDialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+        } catch (Exception eex) {
+            eex.printStackTrace();
+        }
+
+
+    }
 }

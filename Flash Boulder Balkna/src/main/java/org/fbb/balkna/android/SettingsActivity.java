@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import org.fbb.balkna.Packages;
 import org.fbb.balkna.model.Model;
-import org.fbb.balkna.model.Settings;
+import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.model.SoundProvider;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 

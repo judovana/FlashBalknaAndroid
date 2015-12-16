@@ -80,6 +80,8 @@ public class TrainingSelector extends AppCompatActivity {
     static TrainingSelector hack;
     ListView listview;
     ImageView img;
+    private Menu menu;
+    private EditText memo;
 
 
     @Override
@@ -87,6 +89,50 @@ public class TrainingSelector extends AppCompatActivity {
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
+
+    private void selectItem(int position) {
+        lastValidPosition = position;
+        ((ArrayAdapter) (listview.getAdapter())).notifyDataSetChanged();
+        final Training item = (Training) listview.getItemAtPosition(position);
+        //final Training item = (Training) parent.getSelectedItem();
+        if (item == null) {
+            memo.setText(Model.getModel().getDefaultStory());
+            showedImages = new ArrayList<>();
+            showedImages.add(ImgUtils.getDefaultImage());
+            memo.setText(Model.getModel().getDefaultStory());
+            showedImagesPoint = 0;
+            startTraining.setEnabled(false);
+        } else {
+            memo.setText(item.getStory());
+            showedImages = ImgUtils.getTrainingImages(item, img.getWidth(), img.getHeight());
+            if (showedImages.size() == 1) {
+                showedImagesPoint = 0;
+            } else {
+                showedImagesPoint = 1;
+            }
+            startTraining.setEnabled(true);
+        }
+        img.setImageBitmap(showedImages.get(showedImagesPoint));
+
+    }
+
+    private void startTraining() {
+        final Training t = (Training) listview.getItemAtPosition(lastValidPosition);
+        //final Training item = (Training) parent.getSelectedItem();
+        if (t != null) {
+            Intent i = new Intent(getApplicationContext(), RunTraining.class);
+
+            List<BasicTime> l = t.getMergedExercises(Model.getModel().getTimeShift()).decompress();
+            l.add(0, Model.getModel().getWarmUp());
+            if (run != null) {
+                run.stop();
+            }
+            run = new MainTimer(l);
+            src = t;
+
+            startActivity(i);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +159,7 @@ public class TrainingSelector extends AppCompatActivity {
 
         listview = (ListView) findViewById(R.id.listView);
         startTraining = (Button) findViewById(R.id.startTrainingButton);
-        final EditText memo = (EditText) findViewById(R.id.editText);
+        memo = (EditText) findViewById(R.id.editText);
         img = (ImageView) findViewById(R.id.imageView);
         memo.setKeyListener(null);
         startTraining.setEnabled(false);
@@ -135,51 +181,23 @@ public class TrainingSelector extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                lastValidPosition = position;
-                ((ArrayAdapter) (listview.getAdapter())).notifyDataSetChanged();
-                final Training item = (Training) parent.getItemAtPosition(position);
-                //final Training item = (Training) parent.getSelectedItem();
-                if (item == null) {
-                    memo.setText(Model.getModel().getDefaultStory());
-                    showedImages = new ArrayList<>();
-                    showedImages.add(ImgUtils.getDefaultImage());
-                    memo.setText(Model.getModel().getDefaultStory());
-                    showedImagesPoint = 0;
-                    startTraining.setEnabled(false);
-                } else {
-                    memo.setText(item.getStory());
-                    showedImages = ImgUtils.getTrainingImages(item, img.getWidth(), img.getHeight());
-                    if (showedImages.size() == 1) {
-                        showedImagesPoint = 0;
-                    } else {
-                        showedImagesPoint = 1;
-                    }
-                    startTraining.setEnabled(true);
-                }
-                img.setImageBitmap(showedImages.get(showedImagesPoint));
-
+                selectItem(position);
             }
 
+        });
+        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(position);
+                startTraining();
+                return true;
+            }
         });
 
         startTraining.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Training t = (Training) listview.getItemAtPosition(lastValidPosition);
-                //final Training item = (Training) parent.getSelectedItem();
-                if (t != null) {
-                    Intent i = new Intent(getApplicationContext(), RunTraining.class);
-
-                    List<BasicTime> l = t.getMergedExercises(Model.getModel().getTimeShift()).decompress();
-                    l.add(0, Model.getModel().getWarmUp());
-                    if (run != null) {
-                        run.stop();
-                    }
-                    run = new MainTimer(l);
-                    src = t;
-
-                    startActivity(i);
-                }
+                startTraining();
             }
         });
 
@@ -211,7 +229,7 @@ public class TrainingSelector extends AppCompatActivity {
                 return false;
             }
         });
-        if (Model.getModel().isRatioForced()){
+        if (Model.getModel().isRatioForced()) {
             img.setScaleType(ImageView.ScaleType.FIT_CENTER);
         } else {
             img.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -233,6 +251,11 @@ public class TrainingSelector extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_training_selector, menu);
+        this.menu = menu;
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        MenuItem appearence = menu.findItem(R.id.action_view);
+        settings.setTitle(SwingTranslator.R("settingsTab"));
+        appearence.setTitle(SwingTranslator.R("appearenceTab"));
         return true;
     }
 
@@ -247,6 +270,11 @@ public class TrainingSelector extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(i);
+            return true;
+        }
+        if (id == R.id.action_view) {
+//            Intent i = new Intent(getApplicationContext(), AppearenceActivity.class);
+//            startActivity(i);
             return true;
         }
 
@@ -291,6 +319,12 @@ public class TrainingSelector extends AppCompatActivity {
 
     final void setLocales() {
         setTitle(Model.getModel().getTitle());
+        if (menu != null) {
+            MenuItem settings = menu.findItem(R.id.action_settings);
+            MenuItem appearence = menu.findItem(R.id.action_view);
+            settings.setTitle(SwingTranslator.R("settingsTab"));
+            appearence.setTitle(SwingTranslator.R("appearenceTab"));
+        }
         startTraining.setText(SwingTranslator.R("StartTraining"));
     }
 
