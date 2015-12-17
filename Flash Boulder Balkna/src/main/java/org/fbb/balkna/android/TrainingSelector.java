@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -27,6 +28,7 @@ import org.fbb.balkna.model.Model;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
 import org.fbb.balkna.model.primitives.Training;
+import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
 import java.io.File;
@@ -340,7 +342,7 @@ public class TrainingSelector extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View a = super.getView(position, convertView, parent);
                 if (position == lastValidPosition) {
-                    a.setBackgroundColor(Color.CYAN);
+                    a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
                 } else {
                     a.setBackgroundColor(array.getColor(0, 0xFF00FF));
                 }
@@ -348,6 +350,16 @@ public class TrainingSelector extends AppCompatActivity {
             }
 
         };
+        if (Settings.getSettings().getTrainingDelimiterSize() != null && Settings.getSettings().getTrainingDelimiterSize() >0) {
+            if (Settings.getSettings().getTrainingDelimiterColor() != null) {
+                ColorDrawable sage = new ColorDrawable(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getTrainingDelimiterColor()));
+                listview.setDivider(sage);
+            }
+            listview.setDividerHeight(Settings.getSettings().getTrainingDelimiterSize());
+        }
+
+
+
         listview.setAdapter(adapter);
     }
 }

@@ -7,11 +7,13 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -167,7 +169,7 @@ public class RunTraining extends AppCompatActivity {
                     a = super.getView(position, convertView, parent);
                 }
                 if (position == TrainingSelector.run.getIndex()) {
-                    a.setBackgroundColor(Color.CYAN);
+                    a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
                 } else {
                     a.setBackgroundColor(array.getColor(0, 0xFF00FF));
                 }
@@ -284,7 +286,8 @@ public class RunTraining extends AppCompatActivity {
                                 setMainBg();
                             }
                         }
-                        timerLabel.setText(TimeUtils.secondsToMinutes(time.getCurrentValue()));
+                        adjustTimrLabel(TimeUtils.secondsToMinutes(time.getCurrentValue()));
+
 
                     }
                 });
@@ -300,7 +303,7 @@ public class RunTraining extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        timerLabel.setText(s);
+                        adjustTimrLabel(s);
                     }
                 });
             }
@@ -449,6 +452,54 @@ public class RunTraining extends AppCompatActivity {
 
     }
 
+    private void adjustTimrLabel(String s){
+        adjustTimrLabel();
+        timerLabel.setText(s);
+    }
+
+    public void adjustTimrLabel(){
+        timerLabel.setTextAppearance(this, android.R.style.TextAppearance_Large);
+        timerLabel.setTypeface(null, Typeface.BOLD);
+
+
+        if (Settings.getSettings().getMainTimerColor() != null) {
+            timerLabel.setTextColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getMainTimerColor()));
+        } else {
+        }
+        if (Settings.getSettings().getMainTimerSize() != null && Settings.getSettings().getMainTimerSize()!=0) {
+            timerLabel.setTextSize(Settings.getSettings().getMainTimerSize());
+        } else {
+        }
+
+        int grav = Gravity.CENTER;
+
+        String v = Settings.getSettings().getMainTimerPositionV();
+        if (Settings.VPOS_T.equals(v)){
+            grav = Gravity.TOP;
+        }
+        if (Settings.VPOS_B.equals(v)){
+            grav = Gravity.BOTTOM;
+        }
+
+        timerLabel.setGravity(grav);
+        try {
+            int ali = View.TEXT_ALIGNMENT_CENTER;
+
+            String h = Settings.getSettings().getMainTimerPositionH();
+            if (Settings.HPOS_L.equals(h)){
+                ali = View.TEXT_ALIGNMENT_VIEW_START;
+            }
+            if (Settings.HPOS_R.equals(h)){
+                ali = View.TEXT_ALIGNMENT_TEXT_END;
+            }
+
+            timerLabel.setTextAlignment(ali);
+        }catch(Exception ex){
+            //older api "noSuchMethod"
+        }
+
+    }
+
     private void startStop() {
         if (TrainingSelector.run.isStopped()) {
             start.setText(Model.getModel().getPauseTitle());
@@ -568,4 +619,6 @@ public class RunTraining extends AppCompatActivity {
 
 
     }
+
+
 }

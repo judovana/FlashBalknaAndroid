@@ -3,6 +3,7 @@ package org.fbb.balkna.android;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -255,5 +256,11 @@ public class ImgUtils implements ImagesSaver {
         }
     }
 
+    public static int javaColorToAndroidColor(int i){
+        return Color.parseColor(javaColorToAndroidHexColor(i));
+    }
+    public static String javaColorToAndroidHexColor(int i){
+        return String.format("#%06X", (0xFFFFFF & i));
+    }
 
 }
