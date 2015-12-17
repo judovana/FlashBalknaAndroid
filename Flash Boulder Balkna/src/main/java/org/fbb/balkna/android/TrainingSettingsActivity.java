@@ -2,7 +2,6 @@ package org.fbb.balkna.android;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,26 +18,20 @@ import android.widget.TextView;
 
 import org.fbb.balkna.Packages;
 import org.fbb.balkna.model.Model;
-import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.model.SoundProvider;
+import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
 import java.net.URL;
 
-public class SettingsActivity extends AppCompatActivity {
+public class TrainingSettingsActivity extends AppCompatActivity {
 
 
-    private CheckBox ratioCheckbox;
     private CheckBox mute;
     private CheckBox pauseOnExercise;
     private CheckBox pauseOnChange;
     private CheckBox allowSkipping;
     private CheckBox saveForOfline;
-    private CheckBox invert;
-    private CheckBox allowLayout;
-    private TextView autoIterateLabel;
-    private SeekBar auitoiterateSpinner;
-    private TextView languageLabel;
     private TextView soundPackLabel;
     private TextView tutorialLabel;
     private TextView cheaterLabel;
@@ -47,7 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView iterationsModLabel;
     private Button setSoundPackButton;
     private Button testSoundsButton;
-    private Button changeLanguageButton;
     private Button closeButton;
     private Button exportButton;
     private Button downloadButton;
@@ -57,30 +49,22 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView restsModLabel;
 
     private Spinner spinner;
-    private Spinner spinner2;
 
     private double O5DEL = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_trainingsettings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ratioCheckbox = (CheckBox) findViewById(R.id.ratioCheckbox);
         pauseOnChange = (CheckBox) findViewById(R.id.pauseOnChange);
         pauseOnExercise = (CheckBox) findViewById(R.id.pauseOnExercise);
         allowSkipping = (CheckBox) findViewById(R.id.allowSkipping);
         saveForOfline = (CheckBox) findViewById(R.id.saveForOfline);
-        allowLayout = (CheckBox) findViewById(R.id.allowLayout);
-        invert = (CheckBox) findViewById(R.id.invert);
         mute = (CheckBox) findViewById(R.id.mute);
-        autoIterateLabel = (TextView) findViewById(R.id.autoIterateLabel);
-        auitoiterateSpinner = (SeekBar) findViewById(R.id.auitoiterateSpinner);
-        languageLabel = (TextView) findViewById(R.id.languageLabel);
         setSoundPackButton = (Button) findViewById(R.id.setSoundPackButton);
         testSoundsButton = (Button) findViewById(R.id.testSoundsButton);
-        changeLanguageButton = (Button) findViewById(R.id.changeLanguageButton);
         closeButton = (Button) findViewById(R.id.closeButton);
         exportButton = (Button) findViewById(R.id.exportButton);
         downloadButton = (Button) findViewById(R.id.downloadButton);
@@ -96,7 +80,6 @@ public class SettingsActivity extends AppCompatActivity {
         restsModLabel = (TextView) findViewById(R.id.restsModLabel);
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        spinner2 = (Spinner) findViewById(R.id.spinner2);
 
 
         SeekBar iterationsModLabelSeek = (SeekBar) findViewById(R.id.iterationsModLabelSeek);
@@ -177,42 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        auitoiterateSpinner.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                autoIterateLabel.setText("  - " + SwingTranslator.R("Autoiterate") + " - " + progress);
-                Model.getModel().setImagesOnTimerSpeed(progress);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        ratioCheckbox.setChecked(Model.getModel().isRatioForced());
-        ratioCheckbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Model.getModel().setRatioForced(ratioCheckbox.isChecked());
-                if (Model.getModel().isRatioForced()){
-                    TrainingSelector.hack.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    if (RunTraining.hack!=null) {
-                        RunTraining.hack.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    }
-                } else {
-                    TrainingSelector.hack.img.setScaleType(ImageView.ScaleType.FIT_XY);
-                    if (RunTraining.hack!=null) {
-                        RunTraining.hack.img.setScaleType(ImageView.ScaleType.FIT_XY);
-                    }
-                }
-            }
-        });
 
         mute.setChecked(!Model.getModel().isLaud());
         mute.setOnClickListener(new View.OnClickListener() {
@@ -222,21 +170,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        allowLayout.setChecked(Settings.getSettings().isAllowScreenChange());
-        allowLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Settings.getSettings().setAllowScreenChange(allowLayout.isChecked());
-            }
-        });
-
-        invert.setChecked(Settings.getSettings().isInvertScreenCompress());
-        invert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Settings.getSettings().setInvertScreenCompress(invert.isChecked());
-            }
-        });
 
 
         allowSkipping.setChecked(Model.getModel().isAllowSkipping());
@@ -297,43 +230,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, Packages.LANGUAGES);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner2.setAdapter(dataAdapter2);
-        final int[] keeper2 = new int[1];
-        for (int i = 0; i < Packages.LANGUAGES.length; i++) {
-            if (Packages.LANGUAGES[i].equals(Model.getModel().getLanguage())) {
-                keeper2[0] = i;
-                spinner2.clearFocus();
-                spinner2.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        spinner2.requestFocusFromTouch();
-                        spinner2.setSelection(keeper2[0]);
-                        spinner2.requestFocus();
-                    }
-                });
-            }
-        }
 
-        changeLanguageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Model.getModel().setLanguage((String) spinner2.getSelectedItem());
-                    TrainingSelector.hack.reloadTrainings();
-                    SwingTranslator.load((String) spinner2.getSelectedItem());
-                    TrainingSelector.hack.setLocales();
-                    if (RunTraining.hack != null) {
-                        RunTraining.hack.setLocales();
-                    }
-                    setLocales();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,7 +244,7 @@ public class SettingsActivity extends AppCompatActivity {
         editText1.setText(Model.getModel().getExamplePluginUrl());
 
         final Context appContext = this.getApplicationContext();
-        final SettingsActivity self = this;
+        final TrainingSettingsActivity self = this;
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -407,7 +304,6 @@ public class SettingsActivity extends AppCompatActivity {
         });
         setLocales();
 
-        auitoiterateSpinner.setProgress(Model.getModel().getImagesOnTimerSpeed());
         trainingsModLabelSeek.setProgress((int) Math.round(Model.getModel().getTimeShift().getTraining() * O5DEL));
         pausesModLabelSeek.setProgress((int) Math.round(Model.getModel().getTimeShift().getPause() * O5DEL));
         restsModLabelSeek.setProgress((int) Math.round((Model.getModel().getTimeShift().getRest() * O5DEL)));
@@ -415,26 +311,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         setLocales();
 
-        iterationsModLabel.setText("  - " + SwingTranslator.R("iterationsModifiers") + " " + Model.getModel().getTimeShift().getIterations());
-        trainingsModLabel.setText("  - " + SwingTranslator.R("TrainingTimesModifier") + " " + Model.getModel().getTimeShift().getTraining());
-        pausesModLabel.setText("  - " + SwingTranslator.R("PauseTimesModifier") + " " + Model.getModel().getTimeShift().getPause());
-        restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier") + " " + Model.getModel().getTimeShift().getRest());
-
-        autoIterateLabel.setText("  - " + SwingTranslator.R("Autoiterate") + " - " + Model.getModel().getImagesOnTimerSpeed());
-
     }
 
     private void setLocales() {
         mute.setText(SwingTranslator.R("mute"));
-        // not localised because of logic
-        //startButton.setText(SwingTranslator.R("Start"));
-        ratioCheckbox.setText(SwingTranslator.R("ForceRaatio"));
-        autoIterateLabel.setText(SwingTranslator.R("Autoiterate"));
-        languageLabel.setText(SwingTranslator.R("Language"));
         setSoundPackButton.setText(SwingTranslator.R("SetSoundpack"));
         soundPackLabel.setText(SwingTranslator.R("Soundpack"));
         testSoundsButton.setText(SwingTranslator.R("Test"));
-        changeLanguageButton.setText(SwingTranslator.R("LanguageChange"));
         tutorialLabel.setText(SwingTranslator.R("TutorialModeLabel"));
         pauseOnExercise.setText(SwingTranslator.R("PauseOnExercise"));
         pauseOnChange.setText(SwingTranslator.R("PauseOnSerie"));
@@ -446,13 +329,12 @@ public class SettingsActivity extends AppCompatActivity {
         downloadButton.setText(SwingTranslator.R("Upload"));
         managePluginsButton.setText(SwingTranslator.R("ManagePlugins"));
         exercisesModLabel.setText(SwingTranslator.R("ExerciseModifiers"));
-        iterationsModLabel.setText("  - " + SwingTranslator.R("iterationsModifiers"));
-        trainingsModLabel.setText("  - " + SwingTranslator.R("TrainingTimesModifier"));
-        pausesModLabel.setText("  - " + SwingTranslator.R("PauseTimesModifier"));
-        restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier"));
+        iterationsModLabel.setText("  - " + SwingTranslator.R("iterationsModifiers") + " " + Model.getModel().getTimeShift().getIterations());
+        trainingsModLabel.setText("  - " + SwingTranslator.R("TrainingTimesModifier") + " " + Model.getModel().getTimeShift().getTraining());
+        pausesModLabel.setText("  - " + SwingTranslator.R("PauseTimesModifier") + " " + Model.getModel().getTimeShift().getPause());
+        restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier") + " " + Model.getModel().getTimeShift().getRest());
         saveForOfline.setText(SwingTranslator.R("SaveForOfline"));
-        allowLayout.setText(SwingTranslator.R("alowScreenChange"));
-        invert.setText(SwingTranslator.R("invertScreenLayout"));
+        this.setTitle(SwingTranslator.R("settingsTab"));
 
     }
 }

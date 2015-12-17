@@ -10,8 +10,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="org.fbb.balkna.android.SettingsActivity"
-    tools:showIn="@layout/activity_settings">
+    tools:context="org.fbb.balkna.android.AppearenceSettingsActivity"
+    tools:showIn="@layout/activity_appearencesettings">
 
     <LinearLayout
         android:focusable="true"
@@ -53,12 +53,6 @@
             android:progress="100" />
 
         <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New CheckBox"
-            android:id="@+id/mute" />
-
-        <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New CheckBox"
@@ -69,31 +63,6 @@
             android:layout_height="wrap_content"
             android:text="New CheckBox"
             android:id="@+id/allowLayout" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/soundPackLabel" />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/testSoundsButton" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/setSoundPackButton" />
 
         <TextView
             android:layout_width="match_parent"
@@ -115,36 +84,105 @@
             android:id="@+id/changeLanguageButton" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/tutorialLabel" />
+            android:id="@+id/systemViewLabel" />
 
-        <CheckBox
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/delimiterWidthLabel" />
+
+        <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New CheckBox"
-            android:id="@+id/pauseOnExercise" />
+            android:id="@+id/delimiterWidth"
+            android:max="100"
+            android:progress="15" />
 
-        <CheckBox
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/delimiterColorLabel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/delimiterColor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/selectedColorLabel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/selectedColor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/mainTimerSizeLabel" />
+
+        <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New CheckBox"
-            android:id="@+id/pauseOnChange" />
+            android:id="@+id/mainTimerSize"
+            android:max="200"
+            android:progress="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/mainTimerColorLabel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/mainTimerColor" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/cheaterLabel" />
+            android:id="@+id/mainTimerVerticalLabel" />
 
-        <CheckBox
+        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New CheckBox"
-            android:id="@+id/allowSkipping" />
+            android:id="@+id/mainTimerVertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/mainTimerHorizontalLabel" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainTimerHorizontal" />
 
         <TextView
             android:layout_width="match_parent"
@@ -167,96 +205,6 @@
             android:text="New Button"
             android:id="@+id/exportButton"
             android:enabled="false" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/downloadButton" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText1"
-            android:inputType="textNoSuggestions|textUri|text" />
-
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New CheckBox"
-            android:id="@+id/saveForOfline"
-            android:checked="true" />
-
-        <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/managePluginsButton" />
-
-        <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/exercisesModLabel" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/trainingsModLabel" />
-
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/trainingsModLabelSeek"
-            android:max="200"
-            android:progress="200" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/pausesModLabel" />
-
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pausesModLabelSeek"
-            android:max="200"
-            android:progress="200" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/restsModLabel" />
-
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/restsModLabelSeek"
-            android:max="200"
-            android:progress="200" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/iterationsModLabel" />
-
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/iterationsModLabelSeek"
-            android:max="200"
-            android:progress="200" />
 
 
     </LinearLayout>

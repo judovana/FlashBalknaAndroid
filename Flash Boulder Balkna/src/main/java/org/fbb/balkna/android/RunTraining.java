@@ -518,6 +518,8 @@ public class RunTraining extends AppCompatActivity {
         this.menu = menu;
         MenuItem settings = menu.findItem(R.id.action_settings);
         MenuItem appearence = menu.findItem(R.id.action_view);
+        MenuItem reset = menu.findItem(R.id.reset_settings);
+        reset.setTitle(SwingTranslator.R("resetButton"));
         settings.setTitle(SwingTranslator.R("settingsTab"));
         appearence.setTitle(SwingTranslator.R("appearenceTab"));
         return true;
@@ -550,6 +552,8 @@ public class RunTraining extends AppCompatActivity {
         if (menu != null) {
             MenuItem settings = menu.findItem(R.id.action_settings);
             MenuItem appearence = menu.findItem(R.id.action_view);
+            MenuItem reset = menu.findItem(R.id.reset_settings);
+            reset.setTitle(SwingTranslator.R("resetButton"));
             settings.setTitle(SwingTranslator.R("settingsTab"));
             appearence.setTitle(SwingTranslator.R("appearenceTab"));
         }
@@ -565,13 +569,17 @@ public class RunTraining extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+            Intent i = new Intent(getApplicationContext(), TrainingSettingsActivity.class);
             startActivity(i);
             return true;
         }
         if (id == R.id.action_view) {
-//            Intent i = new Intent(getApplicationContext(), AppearenceActivity.class);
-//            startActivity(i);
+            Intent i = new Intent(getApplicationContext(), AppearenceSettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+        if (id == R.id.reset_settings) {
+            Settings.getSettings().resetDefaults();
             return true;
         }
 
