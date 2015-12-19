@@ -59,6 +59,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
     private Spinner spinner2;
 
     private double O5DEL = 20;
+    private int CALLER=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,9 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Settings.getSettings().setInvertScreenCompress(invert.isChecked());
+                RunTraining.rightVisibleSavedState=null;
+                RunTraining.bottomSavedState=null;
+                RunTraining.isImageInTimerSavedState=null;
             }
         });
 
@@ -306,7 +310,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Settings.getSettings().setMainTimerSize(progress);
                 mainTimerSizeLabel.setText(SwingTranslator.R("mainTimerSizeLabel") + ": " + Settings.getSettings().getMainTimerSize());
-                if (RunTraining.hack!=null){
+                if (RunTraining.hack != null) {
                     RunTraining.hack.adjustTimrLabel();
                 }
             }
@@ -321,6 +325,69 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
 
             }
         });
+
+        delimiterColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Settings.getSettings().getTrainingDelimiterColor()!=null) {
+                    ColorPicker.pixel = Settings.getSettings().getTrainingDelimiterColor();
+                }
+                CALLER=1;
+                Intent i = new Intent(getApplicationContext(), ColorPicker.class);
+                startActivityForResult(i, 0);
+                            }
+        });
+        delimiterColor.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Settings.getSettings().setTrainingDelimiterColor(null);
+                setColoredLabel(delimiterColor, Settings.getSettings().getTrainingDelimiterColor());
+                return true;
+            }
+        });
+
+        selectedColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Settings.getSettings().getSelectedItemColor()!=null) {
+                    ColorPicker.pixel = Settings.getSettings().getSelectedItemColor();
+                }
+                CALLER=2;
+                Intent i = new Intent(getApplicationContext(), ColorPicker.class);
+                startActivityForResult(i,0);
+
+            }
+        });
+        selectedColor.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Settings.getSettings().setSelectedItemColor(null);
+                setColoredLabel(selectedColor, Settings.getSettings().getSelectedItemColor());
+                return true;
+            }
+        });
+
+        mainTimerColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Settings.getSettings().getMainTimerColor()!=null) {
+                    ColorPicker.pixel = Settings.getSettings().getMainTimerColor();
+                }
+                CALLER=3;
+                Intent i = new Intent(getApplicationContext(), ColorPicker.class);
+                startActivityForResult(i,0);
+
+            }
+        });
+        mainTimerColor.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Settings.getSettings().setMainTimerColor(null);
+                setColoredLabel(mainTimerColor, Settings.getSettings().getMainTimerColor());
+                return true;
+            }
+        });
+
         setLocales();
 
         setColoredLabel(mainTimerColor, Settings.getSettings().getMainTimerColor());
@@ -348,13 +415,13 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         delmiterWidthLabel.setText(SwingTranslator.R("trainingDelimiterSizeLabel") + ": " + Settings.getSettings().getTrainingDelimiterSize());
         //delimiterWidth
         delimiterColorLabel.setText(SwingTranslator.R("trainingDelimiterColorLabel"));
-        delimiterColor.setText("");
+        delimiterColor.setText("                                                                                 ");
         selectedColorLabel.setText(SwingTranslator.R("selectedItemColorLabel"));
-        selectedColor.setText("");
+        selectedColor.setText( "                                                                                ");
         mainTimerSizeLabel.setText(SwingTranslator.R("mainTimerSizeLabel") + ": " + Settings.getSettings().getMainTimerSize());
         //mainTimerSize
         mainTimerColorLabel.setText(SwingTranslator.R("mainTimerColorLabel"));
-        mainTimerColor.setText("");
+        mainTimerColor.setText("                                                                                 ");
         mainTimerVerticalLabel.setText(SwingTranslator.R("alowScreenChange"));
         //mainTimerVertical
         mainTimerHorizontalLabel.setText(SwingTranslator.R("alowScreenChange"));
@@ -369,7 +436,33 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             label.setBackground(null);
         } else {
             label.setBackgroundColor(ImgUtils.javaColorToAndroidColor(javaColor));
-            label.setText("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
+            label.setText("                                                                                 ");
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ColorPicker.pixel==0)  {
+            return;
+    }
+        if (this.CALLER==1){
+            Settings.getSettings().setTrainingDelimiterColor(ColorPicker.pixel);
+            setColoredLabel(delimiterColor, Settings.getSettings().getTrainingDelimiterColor());
+        }
+
+                if (this.CALLER==2) {
+        Settings.getSettings().setSelectedItemColor(ColorPicker.pixel);
+        setColoredLabel(selectedColor, Settings.getSettings().getSelectedItemColor());
+        }
+
+
+        if (this.CALLER==3) {
+        Settings.getSettings().setMainTimerColor(ColorPicker.pixel);
+        setColoredLabel(mainTimerColor, Settings.getSettings().getMainTimerColor());
+            if (RunTraining.hack!=null){
+                RunTraining.hack.adjustTimrLabel();
+            }
         }
     }
 }

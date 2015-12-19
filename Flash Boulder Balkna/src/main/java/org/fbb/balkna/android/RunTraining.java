@@ -80,7 +80,9 @@ public class RunTraining extends AppCompatActivity {
     private List<Bitmap> showedImages;
     private int showedImagesPoint = 0;
     private boolean isImageInTimerImpl;
-    private static Boolean isImageInTimerSavedState;
+    static Boolean isImageInTimerSavedState;
+    static Integer rightVisibleSavedState;
+    static Integer bottomSavedState;
     private int timerImageCounter = 0;
 
 
@@ -179,7 +181,9 @@ public class RunTraining extends AppCompatActivity {
                     a = super.getView(position, convertView, parent);
                 }
                 if (position == TrainingSelector.run.getIndex()) {
-                    a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
+                    if (Settings.getSettings().getSelectedItemColor()!=null) {
+                        a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
+                    }
                 } else {
                     a.setBackgroundColor(array.getColor(0, 0xFF00FF));
                 }
@@ -221,6 +225,7 @@ public class RunTraining extends AppCompatActivity {
                 if (!Settings.getSettings().isAllowScreenChange()){
                     return;
                 }
+                rightVisibleSavedState=View.GONE;
                 trainingItems.setVisibility(View.GONE);
             }
 
@@ -232,6 +237,7 @@ public class RunTraining extends AppCompatActivity {
                 if (!Settings.getSettings().isAllowScreenChange()){
                     return;
                 }
+                bottomSavedState=View.GONE;
                 imgAndDesc.setVisibility(View.GONE);
 
             }
@@ -366,6 +372,8 @@ public class RunTraining extends AppCompatActivity {
                 if (!Settings.getSettings().isAllowScreenChange()){
                     return;
                 }
+                rightVisibleSavedState=View.VISIBLE;
+                bottomSavedState=View.VISIBLE;
                 trainingItems.setVisibility(View.VISIBLE);
                 imgAndDesc.setVisibility(View.VISIBLE);
             }
@@ -376,6 +384,8 @@ public class RunTraining extends AppCompatActivity {
                 if (!Settings.getSettings().isAllowScreenChange()){
                     return;
                 }
+                rightVisibleSavedState=View.VISIBLE;
+                bottomSavedState=View.VISIBLE;
                 trainingItems.setVisibility(View.VISIBLE);
                 imgAndDesc.setVisibility(View.VISIBLE);
             }
@@ -468,6 +478,13 @@ public class RunTraining extends AppCompatActivity {
                 setIsImageInTimer(isImageInTimerSavedState);
             }
             setMainBg();
+        }
+
+        if (bottomSavedState!=null){
+            imgAndDesc.setVisibility(bottomSavedState);
+        }
+        if (rightVisibleSavedState!=null){
+            trainingItems.setVisibility(rightVisibleSavedState);
         }
 
 

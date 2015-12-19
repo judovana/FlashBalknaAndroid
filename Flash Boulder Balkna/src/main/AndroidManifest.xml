@@ -39,6 +39,10 @@
         <activity
             android:name=".ManagePlugins"
             android:label="@string/title_activity_manage_plugins"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ColorPicker"
+            android:label="@string/title_activity_color_picker"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

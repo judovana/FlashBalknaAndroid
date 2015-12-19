@@ -350,7 +350,9 @@ public class TrainingSelector extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View a = super.getView(position, convertView, parent);
                 if (position == lastValidPosition) {
-                    a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
+                    if (Settings.getSettings().getSelectedItemColor()!=null) {
+                        a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
+                    }
                 } else {
                     a.setBackgroundColor(array.getColor(0, 0xFF00FF));
                 }
