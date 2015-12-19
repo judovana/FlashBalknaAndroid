@@ -77,18 +77,19 @@ public class RunTraining extends AppCompatActivity {
         }
     }
 
-    List<Bitmap> showedImages;
-    int showedImagesPoint = 0;
-    boolean isImageInTimer;
-    int timerImageCounter = 0;
+    private List<Bitmap> showedImages;
+    private int showedImagesPoint = 0;
+    private boolean isImageInTimerImpl;
+    private static Boolean isImageInTimerSavedState;
+    private int timerImageCounter = 0;
 
 
-    Button start;
-    Button skip;
-    Button back;
-    TextView timerLabel;
-    Runnable exercseShiftedLIstener;
-    Runnable secondListener;
+    private Button start;
+    private Button skip;
+    private Button back;
+    private TextView timerLabel;
+    private Runnable exercseShiftedLIstener;
+    private Runnable secondListener;
     ImageView img;
 
     static RunTraining hack;
@@ -100,7 +101,7 @@ public class RunTraining extends AppCompatActivity {
         public void run() {
             while (true) {
                 try {
-                    if (Model.getModel().getImagesOnTimerSpeed() > 0 && isImageInTimer && showedImages.size() > 1) {
+                    if (Model.getModel().getImagesOnTimerSpeed() > 0 && isImageInTimer() && showedImages.size() > 1) {
                         Thread.sleep(Model.getModel().getImagesOnTimerSpeed() * 1000);
                         timerImageCounter++;
                         if (timerImageCounter >= showedImages.size()) {
@@ -119,6 +120,15 @@ public class RunTraining extends AppCompatActivity {
             }
         }
     });
+
+    public void setIsImageInTimer(boolean isImageInTimer) {
+        this.isImageInTimerImpl = isImageInTimer;
+        isImageInTimerSavedState = isImageInTimer;
+    }
+
+    public boolean isImageInTimer() {
+        return isImageInTimerImpl;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -346,7 +356,7 @@ public class RunTraining extends AppCompatActivity {
                     return false;
                 }
                 timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(showedImagesPoint)));
-                isImageInTimer = true;
+                setIsImageInTimer(true);
                 return false;
             }
         });
@@ -378,7 +388,7 @@ public class RunTraining extends AppCompatActivity {
                     return false;
                 }
                 timerLabel.setBackgroundResource(0);
-                isImageInTimer = false;
+                setIsImageInTimer(false);
                 return false;
             }
         });
@@ -389,7 +399,7 @@ public class RunTraining extends AppCompatActivity {
                     return false;
                 }
                 timerLabel.setBackgroundResource(0);
-                isImageInTimer = false;
+                setIsImageInTimer(false);
                 return false;
             }
         });
@@ -445,7 +455,18 @@ public class RunTraining extends AppCompatActivity {
                 ) {
             trainingItems.setVisibility(View.GONE);
             imgAndDesc.setVisibility(View.GONE);
-            isImageInTimer = true;
+            if (isImageInTimerSavedState==null) {
+                isImageInTimerImpl = true; //not saving state!
+            }else{
+                setIsImageInTimer(isImageInTimerSavedState);
+            }
+            setMainBg();
+        }else{
+            if (isImageInTimerSavedState==null) {
+                isImageInTimerImpl = false; //not saving state!
+            }else{
+                setIsImageInTimer(isImageInTimerSavedState);
+            }
             setMainBg();
         }
 
@@ -536,7 +557,7 @@ public class RunTraining extends AppCompatActivity {
     }
 
     public void setMainBg() {
-        if (isImageInTimer) {
+        if (isImageInTimer()) {
             timerImageCounter = showedImagesPoint;
             timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(timerImageCounter)));
         }

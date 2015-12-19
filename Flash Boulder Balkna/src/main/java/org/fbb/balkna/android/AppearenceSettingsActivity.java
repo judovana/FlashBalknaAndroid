@@ -3,11 +3,13 @@ package org.fbb.balkna.android;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,6 +40,22 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
     private Button closeButton;
     private Button exportButton;
 
+    private TextView systemViewLabel;
+    private TextView delmiterWidthLabel;
+    private SeekBar delimiterWidth;
+    private TextView delimiterColorLabel;
+    private TextView delimiterColor;
+    private TextView selectedColorLabel;
+    private TextView selectedColor;
+    private TextView mainTimerSizeLabel;
+    private SeekBar mainTimerSize;
+    private TextView mainTimerColorLabel;
+    private TextView mainTimerColor;
+    private TextView mainTimerVerticalLabel;
+    private Spinner mainTimerVertical;
+    private TextView mainTimerHorizontalLabel;
+    private Spinner mainTimerHorizontal;
+
     private Spinner spinner2;
 
     private double O5DEL = 20;
@@ -58,6 +76,22 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         closeButton = (Button) findViewById(R.id.closeButton);
         exportButton = (Button) findViewById(R.id.exportButton);
         creditsLabel = (TextView) findViewById(R.id.creditsLabel);
+        systemViewLabel = (TextView) findViewById(R.id.systemViewLabel);
+        delmiterWidthLabel = (TextView) findViewById(R.id.delimiterWidthLabel);
+        delimiterWidth = (SeekBar) findViewById(R.id.delimiterWidth);
+        delimiterColorLabel = (TextView) findViewById(R.id.delimiterColorLabel);
+        delimiterColor = (TextView) findViewById(R.id.delimiterColor);
+        selectedColorLabel = (TextView) findViewById(R.id.selectedColorLabel);
+        selectedColor = (TextView) findViewById(R.id.selectedColor);
+        mainTimerSizeLabel = (TextView) findViewById(R.id.mainTimerSizeLabel);
+        mainTimerSize = (SeekBar) findViewById(R.id.mainTimerSize);
+        mainTimerColorLabel = (TextView) findViewById(R.id.mainTimerColorLabel);
+        mainTimerColor = (TextView) findViewById(R.id.mainTimerColor);
+        mainTimerVerticalLabel = (TextView) findViewById(R.id.mainTimerVerticalLabel);
+        mainTimerVertical = (Spinner) findViewById(R.id.mainTimerVertical);
+        mainTimerHorizontalLabel = (TextView) findViewById(R.id.mainTimerHorizontalLabel);
+        mainTimerHorizontal = (Spinner) findViewById(R.id.mainTimerHorizontal);
+
         spinner2 = (Spinner) findViewById(R.id.spinner2);
 
 
@@ -86,14 +120,14 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Model.getModel().setRatioForced(ratioCheckbox.isChecked());
-                if (Model.getModel().isRatioForced()){
+                if (Model.getModel().isRatioForced()) {
                     TrainingSelector.hack.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    if (RunTraining.hack!=null) {
+                    if (RunTraining.hack != null) {
                         RunTraining.hack.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     }
                 } else {
                     TrainingSelector.hack.img.setScaleType(ImageView.ScaleType.FIT_XY);
-                    if (RunTraining.hack!=null) {
+                    if (RunTraining.hack != null) {
                         RunTraining.hack.img.setScaleType(ImageView.ScaleType.FIT_XY);
                     }
                 }
@@ -179,9 +213,119 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
 
         auitoiterateSpinner.setProgress(Model.getModel().getImagesOnTimerSpeed());
 
+        ArrayAdapter<String> dataAdapter4 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, Settings.HPOSITIONS);
+        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mainTimerHorizontal.setAdapter(dataAdapter4);
+        final int[] keeper4 = new int[1];
+        for (int i = 0; i < Settings.VPOSITIONS.length; i++) {
+            if (Settings.HPOSITIONS[i].equals(Settings.getSettings().getMainTimerPositionH())) {
+                keeper4[0] = i;
+                mainTimerHorizontal.clearFocus();
+                mainTimerHorizontal.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainTimerHorizontal.requestFocusFromTouch();
+                        mainTimerHorizontal.setSelection(keeper4[0]);
+                        mainTimerHorizontal.requestFocus();
+                    }
+                });
+            }
+        }
+        mainTimerHorizontal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Settings.getSettings().setMainTimerPositionH(Settings.HPOSITIONS[position]);
+                if (RunTraining.hack != null) {
+                    RunTraining.hack.adjustTimrLabel();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, Settings.VPOSITIONS);
+        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mainTimerVertical.setAdapter(dataAdapter3);
+        final int[] keeper3 = new int[1];
+        for (int i = 0; i < Settings.VPOSITIONS.length; i++) {
+            if (Settings.VPOSITIONS[i].equals(Settings.getSettings().getMainTimerPositionV())) {
+                keeper3[0] = i;
+                mainTimerVertical.clearFocus();
+                mainTimerVertical.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainTimerVertical.requestFocusFromTouch();
+                        mainTimerVertical.setSelection(keeper3[0]);
+                        mainTimerVertical.requestFocus();
+                    }
+                });
+            }
+        }
+        mainTimerVertical.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Settings.getSettings().setMainTimerPositionV(Settings.VPOSITIONS[position]);
+                if (RunTraining.hack != null) {
+                    RunTraining.hack.adjustTimrLabel();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        delimiterWidth.setProgress(Settings.getSettings().getTrainingDelimiterSize());
+        delimiterWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Settings.getSettings().setTrainingDelimiterSize(progress);
+                delmiterWidthLabel.setText(SwingTranslator.R("trainingDelimiterSizeLabel") + ": " + Settings.getSettings().getTrainingDelimiterSize());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        mainTimerSize.setProgress(Settings.getSettings().getMainTimerSize());
+        mainTimerSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Settings.getSettings().setMainTimerSize(progress);
+                mainTimerSizeLabel.setText(SwingTranslator.R("mainTimerSizeLabel") + ": " + Settings.getSettings().getMainTimerSize());
+                if (RunTraining.hack!=null){
+                    RunTraining.hack.adjustTimrLabel();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         setLocales();
 
-
+        setColoredLabel(mainTimerColor, Settings.getSettings().getMainTimerColor());
+        setColoredLabel(selectedColor, Settings.getSettings().getSelectedItemColor());
+        setColoredLabel(delimiterColor, Settings.getSettings().getTrainingDelimiterColor());
 
 
         autoIterateLabel.setText("  - " + SwingTranslator.R("Autoiterate") + " - " + Model.getModel().getImagesOnTimerSpeed());
@@ -200,6 +344,33 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         invert.setText(SwingTranslator.R("invertScreenLayout"));
         this.setTitle(SwingTranslator.R("appearenceTab"));
 
+        systemViewLabel.setText(SwingTranslator.R("colorsInfo"));
+        delmiterWidthLabel.setText(SwingTranslator.R("trainingDelimiterSizeLabel") + ": " + Settings.getSettings().getTrainingDelimiterSize());
+        //delimiterWidth
+        delimiterColorLabel.setText(SwingTranslator.R("trainingDelimiterColorLabel"));
+        delimiterColor.setText("");
+        selectedColorLabel.setText(SwingTranslator.R("selectedItemColorLabel"));
+        selectedColor.setText("");
+        mainTimerSizeLabel.setText(SwingTranslator.R("mainTimerSizeLabel") + ": " + Settings.getSettings().getMainTimerSize());
+        //mainTimerSize
+        mainTimerColorLabel.setText(SwingTranslator.R("mainTimerColorLabel"));
+        mainTimerColor.setText("");
+        mainTimerVerticalLabel.setText(SwingTranslator.R("alowScreenChange"));
+        //mainTimerVertical
+        mainTimerHorizontalLabel.setText(SwingTranslator.R("alowScreenChange"));
+        //mainTimerHorizontal
+
+    }
+
+
+    private void setColoredLabel(TextView label, Integer javaColor) {
+        if (javaColor == null) {
+            label.setText("_ _ _ _ System _ _ _ _ _");
+            label.setBackground(null);
+        } else {
+            label.setBackgroundColor(ImgUtils.javaColorToAndroidColor(javaColor));
+            label.setText("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
+        }
     }
 }
 
