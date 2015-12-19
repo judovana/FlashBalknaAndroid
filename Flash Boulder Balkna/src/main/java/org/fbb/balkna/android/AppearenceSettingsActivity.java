@@ -446,6 +446,9 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         if (ColorPicker.pixel==0)  {
             return;
     }
+        if (ColorPicker.pixel==-1)  {
+            return;
+        }
         if (this.CALLER==1){
             Settings.getSettings().setTrainingDelimiterColor(ColorPicker.pixel);
             setColoredLabel(delimiterColor, Settings.getSettings().getTrainingDelimiterColor());
