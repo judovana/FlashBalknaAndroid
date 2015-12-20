@@ -292,6 +292,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Settings.getSettings().setTrainingDelimiterSize(progress);
                 delmiterWidthLabel.setText(SwingTranslator.R("trainingDelimiterSizeLabel") + ": " + Settings.getSettings().getTrainingDelimiterSize());
+                TrainingSelector.hack.reloadTrainings();
             }
 
             @Override
@@ -342,6 +343,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Settings.getSettings().setTrainingDelimiterColor(null);
                 setColoredLabel(delimiterColor, Settings.getSettings().getTrainingDelimiterColor());
+                TrainingSelector.hack.reloadTrainings();
                 return true;
             }
         });
@@ -363,6 +365,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Settings.getSettings().setSelectedItemColor(null);
                 setColoredLabel(selectedColor, Settings.getSettings().getSelectedItemColor());
+                TrainingSelector.hack.reloadTrainings();
                 return true;
             }
         });
@@ -452,11 +455,13 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         if (this.CALLER==1){
             Settings.getSettings().setTrainingDelimiterColor(ColorPicker.pixel);
             setColoredLabel(delimiterColor, Settings.getSettings().getTrainingDelimiterColor());
+            TrainingSelector.hack.reloadTrainings();
         }
 
                 if (this.CALLER==2) {
         Settings.getSettings().setSelectedItemColor(ColorPicker.pixel);
         setColoredLabel(selectedColor, Settings.getSettings().getSelectedItemColor());
+                    TrainingSelector.hack.reloadTrainings();
         }
 
 
