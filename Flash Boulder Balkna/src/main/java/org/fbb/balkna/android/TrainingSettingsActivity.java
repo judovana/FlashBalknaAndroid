@@ -44,13 +44,27 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private Button exportButton;
     private Button downloadButton;
     private Button managePluginsButton;
+    private Button localPlugin;
     private TextView trainingsModLabel;
     private TextView pausesModLabel;
     private TextView restsModLabel;
+    private TextView editText1;
 
     private Spinner spinner;
 
     private double O5DEL = 20;
+
+    private static final int PICKFILE_REQUEST_CODE = 9;
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data!=null) {
+            String Fpath = data.getDataString();
+            editText1.setText(Fpath);
+        }
+
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +92,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         trainingsModLabel = (TextView) findViewById(R.id.trainingsModLabel);
         pausesModLabel = (TextView) findViewById(R.id.pausesModLabel);
         restsModLabel = (TextView) findViewById(R.id.restsModLabel);
+        localPlugin = (Button) findViewById(R.id.selectLocalFile);
 
         spinner = (Spinner) findViewById(R.id.spinner);
 
@@ -88,6 +103,21 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         SeekBar restsModLabelSeek = (SeekBar) findViewById(R.id.restsModLabelSeek);
 
         exportButton.setEnabled(false);
+
+        editText1 = (TextView) findViewById(R.id.editText1);
+        editText1.setText(Model.getModel().getExamplePluginUrl());
+
+
+        localPlugin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*");
+                intent.putExtra("CONTENT_TYPE", "*/*");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+            }
+        });
 
         iterationsModLabelSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -240,8 +270,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
             }
         });
 
-        final TextView editText1 = (TextView) findViewById(R.id.editText1);
-        editText1.setText(Model.getModel().getExamplePluginUrl());
+
 
         final Context appContext = this.getApplicationContext();
         final TrainingSettingsActivity self = this;
@@ -334,6 +363,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         pausesModLabel.setText("  - " + SwingTranslator.R("PauseTimesModifier") + " " + Model.getModel().getTimeShift().getPause());
         restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier") + " " + Model.getModel().getTimeShift().getRest());
         saveForOfline.setText(SwingTranslator.R("SaveForOfline"));
+        localPlugin.setText(SwingTranslator.R("localPlugin"));
         this.setTitle(SwingTranslator.R("settingsTab"));
 
     }
