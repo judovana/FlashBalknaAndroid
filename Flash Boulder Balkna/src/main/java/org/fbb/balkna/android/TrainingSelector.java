@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import org.fbb.balkna.model.Model;
@@ -79,16 +80,20 @@ public class TrainingSelector extends AppCompatActivity {
     private int lastValidPosition = -1;
 
     public static MainTimer run;
-    public static Training src;
+    public static Trainable mainsrc;
+    public static Training runParent;
     public static String lastHtmlFile;
 
     private OnTouchListenerImpl touch;
     private Button startTraining;
+    private Button trainingBack;
+    private Button trainingFwd;
     static TrainingSelector hack;
     ListView listview;
     ListView listviewCycles;
     ListView listviewExercises;
     private LinearLayout cyclesInfo;
+    private TextView cyclesTrainingInfo;
     ImageView img;
     private Menu menu;
     private EditText memo;
@@ -102,25 +107,55 @@ public class TrainingSelector extends AppCompatActivity {
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
+    private void selectCycle() {
+        final Trainable item = getSelectedTrainable();
+        if (item instanceof  Cycle){
+            Cycle c = (Cycle) item;
+            cyclesTrainingInfo.setText(SwingTranslator.R("trainingCurrent", c.getTrainingPointer() + " - " + c.getTraining().getName()));
+            trainingFwd.setEnabled(true);
+            trainingBack.setEnabled(true);
 
-    private void selectItem(int position) {
-        lastValidPosition = position;
-        final Trainable item;
+            if (c.getTrainingPointer() == 1) {
+                startTraining.setText(SwingTranslator.R("StartTraining1"));
+            } else if (c.getTrainingPointer() == c.getTrainingOverrides().size()) {
+                startTraining.setText(SwingTranslator.R("StartTraining3"));
+            } else {
+                startTraining.setText(SwingTranslator.R("StartTraining2"));
+            }
+
+        }else{
+
+        }
+    }
+
+    private Trainable getSelectedTrainable(){
+        return getSelectedTrainable(lastValidPosition);
+    }
+    private Trainable getSelectedTrainable(int position){
         if (trainings.isChecked()){
             ((ArrayAdapter) (listview.getAdapter())).notifyDataSetChanged();
-            item = (Training) listview.getItemAtPosition(position);
+            return  (Training) listview.getItemAtPosition(position);
         } else if (exercises.isChecked()){
             ((ArrayAdapter) (listviewExercises.getAdapter())).notifyDataSetChanged();
             if (position >= 0) {
-                item = new Training((Exercise) listviewExercises.getItemAtPosition(position));
-            } else {item = null;}
+                return new Training((Exercise) listviewExercises.getItemAtPosition(position));
+            } else { return null;}
         }else if (cycles.isChecked()){
             ((ArrayAdapter) (listviewCycles.getAdapter())).notifyDataSetChanged();
-            item = (Trainable) listviewCycles.getItemAtPosition(position);
+            return  (Trainable) listviewCycles.getItemAtPosition(position);
         }else{
-            item = null;
+            return null;
         }
-        //final Training item = (Training) parent.getSelectedItem();
+    }
+
+    private void selectItem(int position) {
+        lastValidPosition = position;
+        final Trainable item = getSelectedTrainable();
+        startTraining.setText(SwingTranslator.R("StartTraining"));
+        if (item instanceof  Cycle){
+            Cycle c = (Cycle) item;
+            selectCycle();
+        }
         if (item == null) {
             memo.setText(Model.getModel().getDefaultStory());
             showedImages = new ArrayList<>();
@@ -145,18 +180,23 @@ public class TrainingSelector extends AppCompatActivity {
     }
 
     private void startTraining() {
-        final Training t = (Training) listview.getItemAtPosition(lastValidPosition);
-        //final Training item = (Training) parent.getSelectedItem();
+        final Trainable t = getSelectedTrainable();
         if (t != null) {
+            if (t instanceof  Cycle){
+                Cycle c = (Cycle) t;
+                c.startCyclesTraining();
+                selectCycle();
+            }
             Intent i = new Intent(getApplicationContext(), RunTraining.class);
-
-            List<BasicTime> l = t.getMergedExercises(Model.getModel().getTimeShift()).decompress();
+            Training training = t.getTraining();
+            List<BasicTime> l = training.getMergedExercises(Model.getModel().getTimeShift()).decompress();
             l.add(0, Model.getModel().getWarmUp());
             if (run != null) {
                 run.stop();
             }
             run = new MainTimer(l);
-            src = t;
+            mainsrc = t;
+            runParent =  training;
 
             startActivity(i);
         }
@@ -189,8 +229,11 @@ public class TrainingSelector extends AppCompatActivity {
         listviewCycles = (ListView) findViewById(R.id.listViewCycles);
         listviewExercises = (ListView) findViewById(R.id.listViewExercises);
         startTraining = (Button) findViewById(R.id.startTrainingButton);
-        cyclesInfo = (LinearLayout) findViewById(R.id.cyclesInfo);
+        trainingFwd = (Button) findViewById(R.id.cyclesPlusPlus);
+        trainingBack = (Button) findViewById(R.id.cyclesMinusMinus);
         memo = (EditText) findViewById(R.id.editText);
+        cyclesInfo = (LinearLayout) findViewById(R.id.cyclesInfo);
+        cyclesTrainingInfo = (TextView) findViewById(R.id.cyclesTrainingInfo);
         img = (ImageView) findViewById(R.id.imageView);
         exercises= (ToggleButton) findViewById(R.id.exercises);
         trainings= (ToggleButton) findViewById(R.id.trainings);
@@ -242,7 +285,25 @@ public class TrainingSelector extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
-                //startTraining();
+                startTraining();
+                return true;
+            }
+        });
+
+        listviewCycles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view,
+                                    int position, long id) {
+                selectItem(position);
+            }
+
+        });
+        listviewCycles.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(position);
+                startTraining();
                 return true;
             }
         });
@@ -253,12 +314,26 @@ public class TrainingSelector extends AppCompatActivity {
             }
         });
 
+        trainingFwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trainingForwardActionPerformed();
+            }
+        });
+
+        trainingBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trainingBackActionPerformed();
+            }
+        });
+
 
         memo.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 try {
-                    final Training item = (Training) listview.getItemAtPosition(lastValidPosition);
+                    final Trainable item = getSelectedTrainable();
                     //final Training item = (Training) parent.getSelectedItem();
                     if (item != null) {
                         File target = File.createTempFile("android", "cache").getParentFile();
@@ -440,6 +515,9 @@ public class TrainingSelector extends AppCompatActivity {
         cycles.setText(SwingTranslator.R("mainTabCycles"));
         cycles.setTextOn(SwingTranslator.R("mainTabCycles"));
         cycles.setTextOff(SwingTranslator.R("mainTabCycles"));
+        cyclesTrainingInfo.setText(SwingTranslator.R("trainingCurrent", "?"));
+        trainingBack.setText(SwingTranslator.R("trainingBack"));
+        trainingFwd.setText(SwingTranslator.R("trainingFwd"));
     }
 
     public void reloadTrainings() {
@@ -529,5 +607,34 @@ public class TrainingSelector extends AppCompatActivity {
 
 
 
+    }
+
+    private void mdfc(Cycle c, int i) {
+        if (i != c.getTrainingPointer()) {
+            c.modified(" pointer changed  from " + i + " to " + c.getTrainingPointer()+". So training "+c.getTraining(i).getName()+" to "+c.getTraining().getName());
+        }
+    }
+
+    private void trainingBackActionPerformed() {
+        // TODO add your handling code here:
+        Trainable tc = getSelectedTrainable();
+        if (tc instanceof  Cycle) {
+            Cycle c = (Cycle) tc;
+            int i = c.getTrainingPointer();
+            c.decTrainingPointer();
+            mdfc(c, i);
+            selectCycle();
+        }
+    }
+
+    private void trainingForwardActionPerformed() {
+        Trainable tc = getSelectedTrainable();
+        if (tc instanceof  Cycle) {
+            Cycle c = (Cycle) tc;
+            int i = c.getTrainingPointer();
+            c.incTrainingPointer();
+            mdfc(c, i);
+            selectCycle();
+        }
     }
 }

@@ -295,6 +295,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                     dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                     DownloadManager.Request request = new DownloadManager.Request(
                             uri);
+                    request.setTitle(SwingTranslator.R("AndroidDownloadTitle", new File(uri.getPath()).getName()));
                     enqueue = dm.enqueue(request);
 
                 } catch (Exception ex) {

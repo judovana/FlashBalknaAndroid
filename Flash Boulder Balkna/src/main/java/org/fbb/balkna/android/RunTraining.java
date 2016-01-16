@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.fbb.balkna.model.Model;
+import org.fbb.balkna.model.primitives.Cycle;
 import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
@@ -163,7 +164,7 @@ public class RunTraining extends AppCompatActivity {
         skip = (Button) findViewById(R.id.skipButton);
         back = (Button) findViewById(R.id.backButton);
         setSupportActionBar(toolbar);
-        this.setTitle(TrainingSelector.src.getName());
+        setTitle();
         memo.setKeyListener(null);
 
 
@@ -580,11 +581,17 @@ public class RunTraining extends AppCompatActivity {
         }
     }
 
+    public void setTitle() {
+        this.setTitle(TrainingSelector.mainsrc.getName());
+        if (TrainingSelector.mainsrc instanceof Cycle){
+            this.setTitle(TrainingSelector.runParent.getName()+" - "+TrainingSelector.mainsrc.getName());
+        }
+    }
 
     void setLocales() {
         skip.setText(SwingTranslator.R("skipForward"));
         back.setText(SwingTranslator.R("jumpBack"));
-        this.setTitle(TrainingSelector.src.getName());
+        setTitle();
         // not localised because of logic
         //startButton.setText(SwingTranslator.R("Start"));
         if (menu != null) {
