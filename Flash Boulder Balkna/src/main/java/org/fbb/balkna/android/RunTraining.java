@@ -332,7 +332,7 @@ public class RunTraining extends AppCompatActivity {
             public void run() {
                 MainTimer model = TrainingSelector.run;
                 BasicTime c = model.getCurrent();
-                c.soundLogicRuntime();
+                c.soundLogicRuntime(model);
                 final String s = TimeUtils.secondsToHours(c.getCurrentValue() + model.getFutureTime()) + "/" + TimeUtils.secondsToHours(model.getTotalTime());
                 runOnUiThread(new Runnable() {
                     @Override
@@ -422,7 +422,7 @@ public class RunTraining extends AppCompatActivity {
                 }
                 boolean was = Model.getModel().isLaud();
                 Model.getModel().setLaud(false);
-                TrainingSelector.run.skipForward();
+                TrainingSelector.run.skipForward(true);
                 runAllListeners();
                 Model.getModel().setLaud(was);
             }
@@ -436,7 +436,7 @@ public class RunTraining extends AppCompatActivity {
                 }
                 boolean was = Model.getModel().isLaud();
                 Model.getModel().setLaud(false);
-                TrainingSelector.run.jumpBack();
+                TrainingSelector.run.jumpBack(true);
                 runAllListeners();
                 Model.getModel().setLaud(was);
             }

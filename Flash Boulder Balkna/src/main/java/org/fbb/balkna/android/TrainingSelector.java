@@ -22,11 +22,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import org.fbb.balkna.model.Model;
+import org.fbb.balkna.model.Trainable;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
+import org.fbb.balkna.model.primitives.Cycle;
+import org.fbb.balkna.model.primitives.Exercise;
 import org.fbb.balkna.model.primitives.Training;
 import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
@@ -81,9 +86,15 @@ public class TrainingSelector extends AppCompatActivity {
     private Button startTraining;
     static TrainingSelector hack;
     ListView listview;
+    ListView listviewCycles;
+    ListView listviewExercises;
+    private LinearLayout cyclesInfo;
     ImageView img;
     private Menu menu;
     private EditText memo;
+    private ToggleButton exercises;
+    private ToggleButton trainings;
+    private ToggleButton cycles;
 
 
     @Override
@@ -94,8 +105,21 @@ public class TrainingSelector extends AppCompatActivity {
 
     private void selectItem(int position) {
         lastValidPosition = position;
-        ((ArrayAdapter) (listview.getAdapter())).notifyDataSetChanged();
-        final Training item = (Training) listview.getItemAtPosition(position);
+        final Trainable item;
+        if (trainings.isChecked()){
+            ((ArrayAdapter) (listview.getAdapter())).notifyDataSetChanged();
+            item = (Training) listview.getItemAtPosition(position);
+        } else if (exercises.isChecked()){
+            ((ArrayAdapter) (listviewExercises.getAdapter())).notifyDataSetChanged();
+            if (position >= 0) {
+                item = new Training((Exercise) listviewExercises.getItemAtPosition(position));
+            } else {item = null;}
+        }else if (cycles.isChecked()){
+            ((ArrayAdapter) (listviewCycles.getAdapter())).notifyDataSetChanged();
+            item = (Trainable) listviewCycles.getItemAtPosition(position);
+        }else{
+            item = null;
+        }
         //final Training item = (Training) parent.getSelectedItem();
         if (item == null) {
             memo.setText(Model.getModel().getDefaultStory());
@@ -106,15 +130,17 @@ public class TrainingSelector extends AppCompatActivity {
             startTraining.setEnabled(false);
         } else {
             memo.setText(item.getStory());
-            showedImages = ImgUtils.getTrainingImages(item, img.getWidth(), img.getHeight());
-            if (showedImages.size() == 1) {
-                showedImagesPoint = 0;
-            } else {
-                showedImagesPoint = 1;
+            if (!cycles.isChecked()) {
+                showedImages = ImgUtils.getTrainingImages(item, img.getWidth(), img.getHeight());
+                if (showedImages.size() == 1) {
+                    showedImagesPoint = 0;
+                } else {
+                    showedImagesPoint = 1;
+                }
             }
-            startTraining.setEnabled(true);
+            img.setImageBitmap(showedImages.get(showedImagesPoint));
         }
-        img.setImageBitmap(showedImages.get(showedImagesPoint));
+        startTraining.setEnabled(true);
 
     }
 
@@ -160,9 +186,16 @@ public class TrainingSelector extends AppCompatActivity {
         });
 
         listview = (ListView) findViewById(R.id.listView);
+        listviewCycles = (ListView) findViewById(R.id.listViewCycles);
+        listviewExercises = (ListView) findViewById(R.id.listViewExercises);
         startTraining = (Button) findViewById(R.id.startTrainingButton);
+        cyclesInfo = (LinearLayout) findViewById(R.id.cyclesInfo);
         memo = (EditText) findViewById(R.id.editText);
         img = (ImageView) findViewById(R.id.imageView);
+        exercises= (ToggleButton) findViewById(R.id.exercises);
+        trainings= (ToggleButton) findViewById(R.id.trainings);
+        cycles= (ToggleButton) findViewById(R.id.cycles);
+
         memo.setKeyListener(null);
         startTraining.setEnabled(false);
         touch = new OnTouchListenerImpl(img);
@@ -196,6 +229,23 @@ public class TrainingSelector extends AppCompatActivity {
             }
         });
 
+        listviewExercises.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view,
+                                    int position, long id) {
+                selectItem(position);
+            }
+
+        });
+        listviewExercises.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(position);
+                //startTraining();
+                return true;
+            }
+        });
         startTraining.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,6 +286,50 @@ public class TrainingSelector extends AppCompatActivity {
         } else {
             img.setScaleType(ImageView.ScaleType.FIT_XY);
         }
+
+        trainings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trainings.setChecked(true);
+                exercises.setChecked(false);
+                cycles.setChecked(false);
+                listviewCycles.setVisibility(View.GONE);
+                listviewExercises.setVisibility(View.GONE);
+                listview.setVisibility(View.VISIBLE);
+                img.setVisibility(View.VISIBLE);
+                cyclesInfo.setVisibility(View.GONE);
+                selectItem(-1);
+
+            }
+        });
+        exercises.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trainings.setChecked(false);
+                exercises.setChecked(true);
+                cycles.setChecked(false);
+                listviewCycles.setVisibility(View.GONE);
+                listview.setVisibility(View.GONE);
+                listviewExercises.setVisibility(View.VISIBLE);
+                img.setVisibility(View.VISIBLE);
+                cyclesInfo.setVisibility(View.GONE);
+                selectItem(-1);
+            }
+        });
+        cycles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trainings.setChecked(false);
+                exercises.setChecked(false);
+                cycles.setChecked(true);
+                listview.setVisibility(View.GONE);
+                listviewExercises.setVisibility(View.GONE);
+                listviewCycles.setVisibility(View.VISIBLE);
+                img.setVisibility(View.GONE);
+                cyclesInfo.setVisibility(View.VISIBLE);
+                selectItem(-1);
+            }
+        });
         setLocales();
 
     }
@@ -336,6 +430,16 @@ public class TrainingSelector extends AppCompatActivity {
             appearence.setTitle(SwingTranslator.R("appearenceTab"));
         }
         startTraining.setText(SwingTranslator.R("StartTraining"));
+
+        exercises.setText(SwingTranslator.R("mainTabExercise"));
+        exercises.setTextOn(SwingTranslator.R("mainTabExercise"));
+        exercises.setTextOff(SwingTranslator.R("mainTabExercise"));
+        trainings.setText(SwingTranslator.R("mainTabTrainings"));
+        trainings.setTextOn(SwingTranslator.R("mainTabTrainings"));
+        trainings.setTextOff(SwingTranslator.R("mainTabTrainings"));
+        cycles.setText(SwingTranslator.R("mainTabCycles"));
+        cycles.setTextOn(SwingTranslator.R("mainTabCycles"));
+        cycles.setTextOff(SwingTranslator.R("mainTabCycles"));
     }
 
     public void reloadTrainings() {
@@ -344,7 +448,9 @@ public class TrainingSelector extends AppCompatActivity {
                 android.R.attr.colorBackground,
                 android.R.attr.textColorPrimary,
         });
-        final ArrayAdapter<String> adapter = new ArrayAdapter(this,
+
+        //trainings
+        final ArrayAdapter<String> adapter1 = new ArrayAdapter(this,
                 android.R.layout.simple_list_item_1, Model.getModel().getTraingNames()) {
 
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -367,9 +473,61 @@ public class TrainingSelector extends AppCompatActivity {
             }
             listview.setDividerHeight(Settings.getSettings().getTrainingDelimiterSize());
         }
+        listview.setAdapter(adapter1);
+
+        //exercises
+        final ArrayAdapter<String> adapter2 = new ArrayAdapter(this,
+                android.R.layout.simple_list_item_1, Model.getModel().getExercises()) {
+
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View a = super.getView(position, convertView, parent);
+                if (position == lastValidPosition) {
+                    if (Settings.getSettings().getSelectedItemColor()!=null) {
+                        a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
+                    }
+                } else {
+                    a.setBackgroundColor(array.getColor(0, 0xFF00FF));
+                }
+                return a;
+            }
+
+        };
+        if (Settings.getSettings().getTrainingDelimiterSize() != null && Settings.getSettings().getTrainingDelimiterSize() >0) {
+            if (Settings.getSettings().getTrainingDelimiterColor() != null) {
+                ColorDrawable sage = new ColorDrawable(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getTrainingDelimiterColor()));
+                listviewExercises.setDivider(sage);
+            }
+            listviewExercises.setDividerHeight(Settings.getSettings().getTrainingDelimiterSize());
+        }
+        listviewExercises.setAdapter(adapter2);
+
+        //cycles
+        final ArrayAdapter<String> adapter = new ArrayAdapter(this,
+                android.R.layout.simple_list_item_1, Model.getModel().getCycles()) {
+
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View a = super.getView(position, convertView, parent);
+                if (position == lastValidPosition) {
+                    if (Settings.getSettings().getSelectedItemColor()!=null) {
+                        a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
+                    }
+                } else {
+                    a.setBackgroundColor(array.getColor(0, 0xFF00FF));
+                }
+                return a;
+            }
+
+        };
+        if (Settings.getSettings().getTrainingDelimiterSize() != null && Settings.getSettings().getTrainingDelimiterSize() >0) {
+            if (Settings.getSettings().getTrainingDelimiterColor() != null) {
+                ColorDrawable sage = new ColorDrawable(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getTrainingDelimiterColor()));
+                listviewCycles.setDivider(sage);
+            }
+            listviewCycles.setDividerHeight(Settings.getSettings().getTrainingDelimiterSize());
+        }
+        listviewCycles.setAdapter(adapter);
 
 
 
-        listview.setAdapter(adapter);
     }
 }

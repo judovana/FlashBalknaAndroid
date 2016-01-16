@@ -1,17 +1,22 @@
 package org.fbb.balkna.android;
 
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,13 +24,19 @@ import android.widget.TextView;
 import org.fbb.balkna.Packages;
 import org.fbb.balkna.model.Model;
 import org.fbb.balkna.model.SoundProvider;
-import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 public class TrainingSettingsActivity extends AppCompatActivity {
 
+
+    private long enqueue;
+    private DownloadManager dm;
 
     private CheckBox mute;
     private CheckBox pauseOnExercise;
@@ -57,13 +68,12 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private static final int PICKFILE_REQUEST_CODE = 9;
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data!=null) {
+        if (data != null) {
             String Fpath = data.getDataString();
             editText1.setText(Fpath);
         }
 
     }
-
 
 
     @Override
@@ -191,7 +201,6 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         });
 
 
-
         mute.setChecked(!Model.getModel().isLaud());
         mute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,7 +208,6 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                 Model.getModel().setLaud(!mute.isChecked());
             }
         });
-
 
 
         allowSkipping.setChecked(Model.getModel().isAllowSkipping());
@@ -241,12 +249,13 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         });
 
         ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, Packages.SOUND_PACKS);
+                android.R.layout.simple_spinner_item, Packages.SOUND_PACKS());
         dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter1);
+        String[] ps = Packages.SOUND_PACKS();
         final int[] keeper1 = new int[1];
-        for (int i = 0; i < Packages.SOUND_PACKS.length; i++) {
-            if (Packages.SOUND_PACKS[i].equals(SoundProvider.getInstance().getUsedSoundPack())) {
+        for (int i = 0; i < ps.length; i++) {
+            if (ps[i].equals(SoundProvider.getInstance().getUsedSoundPack())) {
                 keeper1[0] = i;
                 spinner.clearFocus();
                 spinner.post(new Runnable() {
@@ -261,7 +270,6 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         }
 
 
-
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,17 +279,26 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         });
 
 
-
         final Context appContext = this.getApplicationContext();
         final TrainingSettingsActivity self = this;
+
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Exception wasError = null;
                 try {
-                    Model.getModel().reload(saveForOfline.isChecked(), new URL(editText1.getText().toString()));
-                    TrainingSelector.hack.reloadTrainings();
+//                    Model.getModel().reload(saveForOfline.isChecked(), new URL(editText1.getText().toString()));
+//                    TrainingSelector.hack.reloadTrainings();
+
+                    Uri uri = Uri.parse(editText1.getText().toString());
+                    dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    DownloadManager.Request request = new DownloadManager.Request(
+                            uri);
+                    enqueue = dm.enqueue(request);
 
                 } catch (Exception ex) {
+                    wasError = ex;
                     ex.printStackTrace();
                     try {
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
@@ -297,6 +314,20 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                     } catch (Exception eex) {
                         eex.printStackTrace();
                     }
+                }
+                if (wasError == null) try {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                    // set title
+                    alertDialogBuilder.setTitle(SwingTranslator.R("AndroidDownloadTitle"));
+                    alertDialogBuilder.setCancelable(true);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage(SwingTranslator.R("AndroidDownloadMessage", editText1.getText()));
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                } catch (Exception eex) {
+                    eex.printStackTrace();
                 }
             }
         });
@@ -339,6 +370,91 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         iterationsModLabelSeek.setProgress((int) Math.round(Model.getModel().getTimeShift().getIterations() * O5DEL));
 
         setLocales();
+
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                String nwName = null;
+                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
+                    long downloadId = intent.getLongExtra(
+                            DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(enqueue);
+                    Cursor c = dm.query(query);
+                    if (c.moveToFirst()) {
+                        int columnIndex = c
+                                .getColumnIndex(DownloadManager.COLUMN_STATUS);
+                        if (DownloadManager.STATUS_SUCCESSFUL == c
+                                .getInt(columnIndex)) {
+                            Exception wasError = null;
+                            try {
+                                nwName = c
+                                        .getString(c
+                                                .getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                            } catch (Exception ex) {
+                                wasError = ex;
+                                ex.printStackTrace();
+                                try {
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                                    // set title
+                                    alertDialogBuilder.setTitle("Error");
+                                    alertDialogBuilder.setCancelable(true);
+                                    // set dialog message
+                                    alertDialogBuilder
+                                            .setMessage(ex.getMessage());
+                                    // create alert dialog
+                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                    alertDialog.show();
+                                } catch (Exception eex) {
+                                    eex.printStackTrace();
+                                }
+                            }
+                            if (wasError == null) try {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                                // set title
+                                alertDialogBuilder.setTitle(SwingTranslator.R("AndroidDownloadFinishedTitle"));
+                                alertDialogBuilder.setCancelable(true);
+                                // set dialog message
+                                alertDialogBuilder
+                                        .setMessage(SwingTranslator.R("AndroidDownloadFinishedMessage", editText1.getText().toString()));
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                            } catch (Exception eex) {
+                                eex.printStackTrace();
+                            }
+
+                            try {
+                                Model.getModel().reload(saveForOfline.isChecked(), new URL("File://"+nwName));
+                                TrainingSelector.hack.reloadTrainings();
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                try {
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                                    // set title
+                                    alertDialogBuilder.setTitle("Error");
+                                    alertDialogBuilder.setCancelable(true);
+                                    // set dialog message
+                                    alertDialogBuilder
+                                            .setMessage(ex.getMessage());
+                                    // create alert dialog
+                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                    alertDialog.show();
+                                } catch (Exception eex) {
+                                    eex.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        registerReceiver(receiver, new IntentFilter(
+                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
     }
 

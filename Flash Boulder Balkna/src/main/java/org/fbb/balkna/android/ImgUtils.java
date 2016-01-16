@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import org.fbb.balkna.Packages;
 import org.fbb.balkna.model.ImagesSaver;
 import org.fbb.balkna.model.Model;
+import org.fbb.balkna.model.Trainable;
 import org.fbb.balkna.model.primitives.Exercise;
 import org.fbb.balkna.model.primitives.Training;
 import org.fbb.balkna.model.utils.IoUtils;
@@ -109,7 +110,7 @@ public class ImgUtils implements ImagesSaver {
         return ImgUtils.getImage(Packages.IMAGES_APP, Model.getDefaultImage());
     }
 
-    public static List<Bitmap> getTrainingImages(Training t, int targetW, int targetH) {
+    public static List<Bitmap> getTrainingImages(Trainable t, int targetW, int targetH) {
         List<Bitmap> r = getImages(Packages.IMAGES_TRA, t.getImages());
         List<Bitmap> r2 = getImages(Packages.IMAGES_EXE, t.getExerciseImages());
         if (r == null) {
