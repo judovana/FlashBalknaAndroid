@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -635,37 +634,41 @@ public class RunTraining extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         try {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
-            // set title
-            alertDialogBuilder.setTitle("!!!No!Nie!Nein!Ne!!!");
-            alertDialogBuilder.setCancelable(true);
-            // set dialog message
-            alertDialogBuilder
-                    .setMessage(SwingTranslator.R("AndroidBackTraining"));
+            if (TrainingSelector.run.getIndex() == TrainingSelector.run.getSrc().size()-1){
+                RunTraining.super.onBackPressed();
+                TrainingSelector.run.stop();
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                // set title
+                alertDialogBuilder.setTitle("!!!No!Nie!Nein!Ne!!!");
+                alertDialogBuilder.setCancelable(true);
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage(SwingTranslator.R("AndroidBackTraining"));
 
-            alertDialogBuilder
-                    .setPositiveButton(SwingTranslator.R("AndroidBackYes"), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            RunTraining.super.onBackPressed();
-                            TrainingSelector.run.stop();
-                        }
-                    });
-            alertDialogBuilder.setNegativeButton(SwingTranslator.R("AndroidBackNo"), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                alertDialogBuilder
+                        .setPositiveButton(SwingTranslator.R("AndroidBackYes"), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                RunTraining.super.onBackPressed();
+                                TrainingSelector.run.stop();
+                            }
+                        });
+                alertDialogBuilder.setNegativeButton(SwingTranslator.R("AndroidBackNo"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                }
-            });
-            alertDialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
+                    }
+                });
+                alertDialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
 
-                }
-            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-
+                    }
+                });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
         } catch (Exception eex) {
             eex.printStackTrace();
         }
