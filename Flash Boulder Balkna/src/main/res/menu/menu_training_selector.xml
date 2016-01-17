@@ -19,4 +19,12 @@
         android:orderInCategory="100"
         android:title="reset_settings"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/checkTest"
+        android:orderInCategory="100"
+        android:title="show advanced"
+        android:checkable="true"
+        android:checked="true"
+        app:showAsAction="never" />
 </menu>

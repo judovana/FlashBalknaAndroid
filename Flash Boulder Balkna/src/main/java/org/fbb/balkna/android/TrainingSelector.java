@@ -93,6 +93,7 @@ public class TrainingSelector extends AppCompatActivity {
     ListView listviewCycles;
     ListView listviewExercises;
     private LinearLayout cyclesInfo;
+    private LinearLayout togglButtons;
     private TextView cyclesTrainingInfo;
     ImageView img;
     private Menu menu;
@@ -157,10 +158,10 @@ public class TrainingSelector extends AppCompatActivity {
             selectCycle();
         }
         if (item == null) {
-            memo.setText(Model.getModel().getDefaultStory());
+            memo.setText(Model.getModel().getDefaultStory()+getAndroidGuiStory());
             showedImages = new ArrayList<>();
             showedImages.add(ImgUtils.getDefaultImage());
-            memo.setText(Model.getModel().getDefaultStory());
+            memo.setText(Model.getModel().getDefaultStory()+getAndroidGuiStory());
             showedImagesPoint = 0;
             startTraining.setEnabled(false);
         } else {
@@ -233,6 +234,7 @@ public class TrainingSelector extends AppCompatActivity {
         trainingBack = (Button) findViewById(R.id.cyclesMinusMinus);
         memo = (EditText) findViewById(R.id.editText);
         cyclesInfo = (LinearLayout) findViewById(R.id.cyclesInfo);
+        togglButtons= (LinearLayout) findViewById(R.id.toggleButtons);
         cyclesTrainingInfo = (TextView) findViewById(R.id.cyclesTrainingInfo);
         img = (ImageView) findViewById(R.id.imageView);
         exercises= (ToggleButton) findViewById(R.id.exercises);
@@ -405,6 +407,7 @@ public class TrainingSelector extends AppCompatActivity {
                 selectItem(-1);
             }
         });
+        showHideAdvancedBUttons();
         setLocales();
 
     }
@@ -426,9 +429,12 @@ public class TrainingSelector extends AppCompatActivity {
         MenuItem settings = menu.findItem(R.id.action_settings);
         MenuItem appearence = menu.findItem(R.id.action_view);
         MenuItem reset = menu.findItem(R.id.reset_settings);
+        MenuItem check= menu.findItem(R.id.checkTest);
+        check.setTitle(SwingTranslator.R("AndroidAdvanced"));
         reset.setTitle(SwingTranslator.R("resetButton"));
         settings.setTitle(SwingTranslator.R("settingsTab"));
         appearence.setTitle(SwingTranslator.R("appearenceTab"));
+        check.setChecked(Settings.getSettings().isAndroidAdvanced());
         return true;
     }
 
@@ -452,10 +458,30 @@ public class TrainingSelector extends AppCompatActivity {
         }
         if (id == R.id.reset_settings) {
             Settings.getSettings().resetDefaults();
+            MenuItem check= menu.findItem(R.id.checkTest);
+            check.setChecked(Settings.getSettings().isAndroidAdvanced());
+            showHideAdvancedBUttons();
+            return true;
+        }
+        if (id == R.id.checkTest) {
+            MenuItem check = menu.findItem(R.id.checkTest);
+            check.setChecked(!check.isChecked());
+            Settings.getSettings().setAndroidAdvanced(check.isChecked());
+            Model.getModel().save();
+            showHideAdvancedBUttons();
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showHideAdvancedBUttons(){
+        if (!Settings.getSettings().isAndroidAdvanced()){
+         togglButtons.setVisibility(View.GONE);
+        } else{
+            togglButtons.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -500,10 +526,12 @@ public class TrainingSelector extends AppCompatActivity {
             MenuItem settings = menu.findItem(R.id.action_settings);
             MenuItem appearence = menu.findItem(R.id.action_view);
             MenuItem reset = menu.findItem(R.id.reset_settings);
+            MenuItem check= menu.findItem(R.id.checkTest);
+            check.setTitle(SwingTranslator.R("AndroidAdvanced"));
             reset.setTitle(SwingTranslator.R("resetButton"));
             settings.setTitle(SwingTranslator.R("settingsTab"));
             appearence.setTitle(SwingTranslator.R("appearenceTab"));
-        }
+            }
         startTraining.setText(SwingTranslator.R("StartTraining"));
 
         exercises.setText(SwingTranslator.R("mainTabExercise"));
