@@ -1,5 +1,6 @@
 package org.fbb.balkna.android;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -393,6 +394,7 @@ public class TrainingSelector extends AppCompatActivity {
                 selectItem(-1);
             }
         });
+        final TrainingSelector self = this;
         cycles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -405,8 +407,21 @@ public class TrainingSelector extends AppCompatActivity {
                 img.setVisibility(View.GONE);
                 cyclesInfo.setVisibility(View.VISIBLE);
                 selectItem(-1);
+                if (listviewCycles.getCount() <= 0) {
+                    try {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                        //alertDialogBuilder.setTitle("Error");
+                        alertDialogBuilder.setCancelable(true);
+                        alertDialogBuilder
+                                .setMessage(SwingTranslator.R("NoCyclesFound"));
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+                    } catch (Exception eex) {
+                        eex.printStackTrace();
+                    }
+                }
             }
-        });
+    });
         showHideAdvancedBUttons();
         setLocales();
 

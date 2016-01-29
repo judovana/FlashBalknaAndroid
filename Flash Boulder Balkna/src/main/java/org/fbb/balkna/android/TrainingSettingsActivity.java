@@ -128,16 +128,29 @@ public class TrainingSettingsActivity extends AppCompatActivity {
 
         editText1 = (TextView) findViewById(R.id.editText1);
         editText1.setText(Model.getModel().getExamplePluginUrl());
-
+        final TrainingSettingsActivity self = this;
 
         localPlugin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
-                intent.putExtra("CONTENT_TYPE", "*/*");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("file/*");
+                    intent.putExtra("CONTENT_TYPE", "*/*");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+                }catch(Exception ex){
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                    // set title
+                    alertDialogBuilder.setTitle("Error");
+                    alertDialogBuilder.setCancelable(true);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage(ex.getMessage());
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
             }
         });
 
@@ -292,7 +305,6 @@ public class TrainingSettingsActivity extends AppCompatActivity {
 
 
         final Context appContext = this.getApplicationContext();
-        final TrainingSettingsActivity self = this;
 
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
