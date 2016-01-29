@@ -13,10 +13,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +27,8 @@ import android.widget.TextView;
 import org.fbb.balkna.Packages;
 import org.fbb.balkna.model.Model;
 import org.fbb.balkna.model.SoundProvider;
+import org.fbb.balkna.model.primitives.ExerciseOverrides;
+import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
 import java.io.File;
@@ -60,6 +65,10 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private TextView pausesModLabel;
     private TextView restsModLabel;
     private TextView editText1;
+    private TextView singleExerciseOverrideLabel;
+    private TextView singleExerciseOverrideValidation;
+    private EditText singleExerciseOverride;
+
 
     private Spinner spinner;
 
@@ -102,6 +111,9 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         trainingsModLabel = (TextView) findViewById(R.id.trainingsModLabel);
         pausesModLabel = (TextView) findViewById(R.id.pausesModLabel);
         restsModLabel = (TextView) findViewById(R.id.restsModLabel);
+        singleExerciseOverrideLabel = (TextView) findViewById(R.id.singleExerciseOverrideLabel);
+        singleExerciseOverrideValidation = (TextView) findViewById(R.id.singleExerciseOverrideValidation);
+        singleExerciseOverride = (EditText) findViewById(R.id.singleExerciseOverride);
         localPlugin = (Button) findViewById(R.id.selectLocalFile);
 
         spinner = (Spinner) findViewById(R.id.spinner);
@@ -363,6 +375,27 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        singleExerciseOverride.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Settings.getSettings().setSingleExerciseOverride(singleExerciseOverride.getText().toString());
+                singleExerciseOverrideValidation.setText(ExerciseOverrides.fakeFromString(Settings.getSettings().getSingleExerciseOverride()).format());
+            }
+        });
+
+        singleExerciseOverride.setText(Settings.getSettings().getSingleExerciseOverride());
+
         setLocales();
 
         trainingsModLabelSeek.setProgress((int) Math.round(Model.getModel().getTimeShift().getTraining() * O5DEL));
@@ -481,6 +514,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier") + " " + Model.getModel().getTimeShift().getRest());
         saveForOfline.setText(SwingTranslator.R("SaveForOfline"));
         localPlugin.setText(SwingTranslator.R("localPlugin"));
+        singleExerciseOverrideLabel.setText(SwingTranslator.R("singleTrainingOverride"));
         this.setTitle(SwingTranslator.R("settingsTab"));
 
     }

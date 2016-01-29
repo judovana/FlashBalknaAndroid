@@ -127,6 +127,24 @@
             android:layout_height="wrap_content"
             android:text="New Button"
             android:id="@+id/selectLocalFile" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/singleExerciseOverrideLabel" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/singleExerciseOverride"
+            android:text="TT PP II RR"
+            android:inputType="textNoSuggestions|textUri|text" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/singleExerciseOverrideValidation" />
 
         <TextView
         android:layout_width="match_parent"
