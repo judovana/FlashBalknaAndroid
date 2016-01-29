@@ -44,6 +44,10 @@
         <activity
             android:name=".ColorPicker"
             android:label="@string/title_activity_color_picker"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StatisticsTextViewActivity"
+            android:label="@string/title_activity_statistics_text_view"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

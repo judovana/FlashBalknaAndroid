@@ -13,5 +13,6 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_manage_plugins">Manage Plugins</string>
     <string name="title_activity_color_picker">Color Picker</string>
+    <string name="title_activity_statistics_text_view">Statistics</string>
 
 </resources>

@@ -557,6 +557,8 @@ public class RunTraining extends AppCompatActivity {
         MenuItem settings = menu.findItem(R.id.action_settings);
         MenuItem appearence = menu.findItem(R.id.action_view);
         MenuItem reset = menu.findItem(R.id.reset_settings);
+        MenuItem statustics= menu.findItem(R.id.statisticsMenuItem);
+        statustics.setTitle(SwingTranslator.R("statsTab"));
         reset.setTitle(SwingTranslator.R("resetButton"));
         settings.setTitle(SwingTranslator.R("settingsTab"));
         appearence.setTitle(SwingTranslator.R("appearenceTab"));
@@ -597,6 +599,8 @@ public class RunTraining extends AppCompatActivity {
             MenuItem settings = menu.findItem(R.id.action_settings);
             MenuItem appearence = menu.findItem(R.id.action_view);
             MenuItem reset = menu.findItem(R.id.reset_settings);
+            MenuItem statustics= menu.findItem(R.id.statisticsMenuItem);
+            statustics.setTitle(SwingTranslator.R("statsTab"));
             reset.setTitle(SwingTranslator.R("resetButton"));
             settings.setTitle(SwingTranslator.R("settingsTab"));
             appearence.setTitle(SwingTranslator.R("appearenceTab"));
@@ -624,6 +628,11 @@ public class RunTraining extends AppCompatActivity {
         }
         if (id == R.id.reset_settings) {
             Settings.getSettings().resetDefaults();
+            return true;
+        }
+        if (id == R.id.statisticsMenuItem) {
+            Intent i = new Intent(getApplicationContext(), StatisticsTextViewActivity.class);
+            startActivity(i);
             return true;
         }
 

@@ -311,11 +311,13 @@ public class TrainingSettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Exception wasError = null;
+                Uri uri = Uri.parse("http://unknown.un/unknown");
+
                 try {
 //                    Model.getModel().reload(saveForOfline.isChecked(), new URL(editText1.getText().toString()));
 //                    TrainingSelector.hack.reloadTrainings();
 
-                    Uri uri = Uri.parse(editText1.getText().toString());
+                    uri = Uri.parse(editText1.getText().toString());
                     dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                     DownloadManager.Request request = new DownloadManager.Request(
                             uri);
@@ -343,7 +345,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                 if (wasError == null) try {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
                     // set title
-                    alertDialogBuilder.setTitle(SwingTranslator.R("AndroidDownloadTitle"));
+                    alertDialogBuilder.setTitle(SwingTranslator.R("AndroidDownloadTitle",  new File(uri.getPath()).getName()));
                     alertDialogBuilder.setCancelable(true);
                     // set dialog message
                     alertDialogBuilder

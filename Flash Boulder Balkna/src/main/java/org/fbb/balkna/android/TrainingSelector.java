@@ -445,6 +445,8 @@ public class TrainingSelector extends AppCompatActivity {
         MenuItem appearence = menu.findItem(R.id.action_view);
         MenuItem reset = menu.findItem(R.id.reset_settings);
         MenuItem check= menu.findItem(R.id.checkTest);
+        MenuItem statustics= menu.findItem(R.id.statisticsMenuItem);
+        statustics.setTitle(SwingTranslator.R("statsTab"));
         check.setTitle(SwingTranslator.R("AndroidAdvanced"));
         reset.setTitle(SwingTranslator.R("resetButton"));
         settings.setTitle(SwingTranslator.R("settingsTab"));
@@ -468,6 +470,11 @@ public class TrainingSelector extends AppCompatActivity {
         }
         if (id == R.id.action_view) {
             Intent i = new Intent(getApplicationContext(), AppearenceSettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+        if (id == R.id.statisticsMenuItem) {
+            Intent i = new Intent(getApplicationContext(), StatisticsTextViewActivity.class);
             startActivity(i);
             return true;
         }
@@ -542,6 +549,8 @@ public class TrainingSelector extends AppCompatActivity {
             MenuItem appearence = menu.findItem(R.id.action_view);
             MenuItem reset = menu.findItem(R.id.reset_settings);
             MenuItem check= menu.findItem(R.id.checkTest);
+            MenuItem stats= menu.findItem(R.id.statisticsMenuItem);
+            stats.setTitle(SwingTranslator.R("statsTab"));
             check.setTitle(SwingTranslator.R("AndroidAdvanced"));
             reset.setTitle(SwingTranslator.R("resetButton"));
             settings.setTitle(SwingTranslator.R("settingsTab"));
