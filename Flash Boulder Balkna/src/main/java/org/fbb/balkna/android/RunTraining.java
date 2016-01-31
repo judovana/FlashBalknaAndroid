@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import org.fbb.balkna.model.Model;
 import org.fbb.balkna.model.primitives.Cycle;
+import org.fbb.balkna.model.primitives.history.StatisticHelper;
 import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.model.merged.uncompressed.MainTimer;
 import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
@@ -257,7 +258,15 @@ public class RunTraining extends AppCompatActivity {
                         trainingItems.smoothScrollToPosition(model.getIndex());
 
                         BasicTime time = model.getCurrent();
+                        Exercise currentExercise = time.getOriginator().getOriginal();
+
                         if (model.isEnded()) {
+                            currentExercise.getStatsHelper().finished(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
+                            if (model.wasSkipped()) {
+                                TrainingSelector.runParent.getStatsHelper().finishedWithSkips(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
+                            } else {
+                                TrainingSelector.runParent.getStatsHelper().finished(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
+                            }
                             title.setText(time.getEndMssage());
                             showedImages = new ArrayList<>();
                             showedImages.add(ImgUtils.getDefaultImage());
@@ -271,6 +280,7 @@ public class RunTraining extends AppCompatActivity {
                             title.setText(time.getInformaiveTitle());
                             if (time instanceof PausaTime) {
                                 cross.setVisibility(View.VISIBLE);
+                                currentExercise.getStatsHelper().finished(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
                                 nextTitle.setText(model.next());
                                 BasicTime ntime = model.getNext();
                                 Exercise t = ntime.getOriginator().getOriginal();
@@ -292,6 +302,7 @@ public class RunTraining extends AppCompatActivity {
 
                             } else {
                                 cross.setVisibility(View.INVISIBLE);
+                                currentExercise.getStatsHelper().started(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
                                 nextTitle.setText(model.now());
                                 Exercise t = time.getOriginator().getOriginal();
                                 showedImages = ImgUtils.getExerciseImages(t, img.getWidth(), img.getHeight());
@@ -420,6 +431,7 @@ public class RunTraining extends AppCompatActivity {
                 if (!Model.getModel().isAllowSkipping()) {
                     return;
                 }
+                TrainingSelector.run.getCurrent().getOriginator().getOriginal().getStatsHelper().canceled(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
                 boolean was = Model.getModel().isLaud();
                 Model.getModel().setLaud(false);
                 TrainingSelector.run.skipForward(true);
@@ -434,6 +446,7 @@ public class RunTraining extends AppCompatActivity {
                 if (!Model.getModel().isAllowSkipping()) {
                     return;
                 }
+                TrainingSelector.run.getCurrent().getOriginator().getOriginal().getStatsHelper().canceled(StatisticHelper.generateMessage(isCycle(), TrainingSelector.runParent, TrainingSelector.run));
                 boolean was = Model.getModel().isLaud();
                 Model.getModel().setLaud(false);
                 TrainingSelector.run.jumpBack(true);
@@ -585,7 +598,7 @@ public class RunTraining extends AppCompatActivity {
     public void setTitle() {
         this.setTitle(TrainingSelector.mainsrc.getName());
         if (TrainingSelector.mainsrc instanceof Cycle){
-            this.setTitle(TrainingSelector.runParent.getName()+" - "+TrainingSelector.mainsrc.getName());
+            this.setTitle(TrainingSelector.runParent.getName() + " - " + TrainingSelector.mainsrc.getName());
         }
     }
 
@@ -639,6 +652,13 @@ public class RunTraining extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private Cycle isCycle(){
+        Cycle c = null;
+        if (TrainingSelector.mainsrc instanceof Cycle) {
+            c = (Cycle) (TrainingSelector.mainsrc);
+        }
+        return c;
+    }
 
     @Override
     public void onBackPressed() {
@@ -660,6 +680,10 @@ public class RunTraining extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 RunTraining.super.onBackPressed();
+                                Cycle c = isCycle();
+                                TrainingSelector.runParent.getStatsHelper().canceled(StatisticHelper.generateMessage(c, TrainingSelector.runParent, TrainingSelector.run));
+                                TrainingSelector.run.getCurrent().getOriginator().getOriginal().getStatsHelper().canceled(StatisticHelper.generateMessage(c, TrainingSelector.runParent, TrainingSelector.run));
+
                                 TrainingSelector.run.stop();
                             }
                         });

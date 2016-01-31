@@ -35,6 +35,7 @@ import org.fbb.balkna.model.merged.uncompressed.timeUnits.BasicTime;
 import org.fbb.balkna.model.primitives.Cycle;
 import org.fbb.balkna.model.primitives.Exercise;
 import org.fbb.balkna.model.primitives.Training;
+import org.fbb.balkna.model.primitives.history.StatisticHelper;
 import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
@@ -184,8 +185,9 @@ public class TrainingSelector extends AppCompatActivity {
     private void startTraining() {
         final Trainable t = getSelectedTrainable();
         if (t != null) {
+            Cycle c = null;
             if (t instanceof  Cycle){
-                Cycle c = (Cycle) t;
+                c = (Cycle) t;
                 c.startCyclesTraining();
                 selectCycle();
             }
@@ -199,7 +201,7 @@ public class TrainingSelector extends AppCompatActivity {
             run = new MainTimer(l);
             mainsrc = t;
             runParent =  training;
-
+            training.getStatsHelper().started(StatisticHelper.generateMessage(c, (Training) training, (Exercise) null));
             startActivity(i);
         }
     }
