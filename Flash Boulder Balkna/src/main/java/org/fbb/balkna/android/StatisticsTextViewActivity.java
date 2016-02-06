@@ -40,6 +40,7 @@ public class StatisticsTextViewActivity extends AppCompatActivity {
     Button exDel;
     Button trDel;
     Button cycDel;
+    Button nextGraphs;
 
     int lastValid = -1;
 
@@ -60,6 +61,7 @@ public class StatisticsTextViewActivity extends AppCompatActivity {
         exDel = (Button) findViewById(R.id.exDelete);
         trDel = (Button) findViewById(R.id.trDelete);
         cycDel = (Button) findViewById(R.id.cycDelete);
+        nextGraphs= (Button) findViewById(R.id.nextGraphs);
 
         exCheck.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +153,30 @@ public class StatisticsTextViewActivity extends AppCompatActivity {
             }
         });
 
+
+        nextGraphs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                        // set title
+                        alertDialogBuilder.setTitle("!!!Yes!Jo!Ja!ANo!!!");
+                        alertDialogBuilder.setCancelable(true);
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage("Comming soon! Will be in next release!");
+                       AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+                    }
+                } catch (Exception eex) {
+                    eex.printStackTrace();
+                }
+
+
+            }
+        });
+
         statsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -210,6 +236,7 @@ public class StatisticsTextViewActivity extends AppCompatActivity {
         exCheck.setText(SwingTranslator.R("mainTabExercise"));
         trCheck.setText(SwingTranslator.R("mainTabTrainings"));
         cycCheck.setText(SwingTranslator.R("mainTabCycles"));
+        nextGraphs.setText(SwingTranslator.R("Next"));
         exDel.setText(SwingTranslator.R("delete"));
         trDel.setText(SwingTranslator.R("delete"));
         cycDel.setText(SwingTranslator.R("delete"));

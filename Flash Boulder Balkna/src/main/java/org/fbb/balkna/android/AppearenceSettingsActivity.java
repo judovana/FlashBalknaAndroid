@@ -32,6 +32,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
     private CheckBox ratioCheckbox;
     private CheckBox invert;
     private CheckBox allowLayout;
+    private CheckBox inhibitSleepAndroid;
     private TextView autoIterateLabel;
     private SeekBar auitoiterateSpinner;
     private TextView languageLabel;
@@ -69,6 +70,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ratioCheckbox = (CheckBox) findViewById(R.id.ratioCheckbox);
         allowLayout = (CheckBox) findViewById(R.id.allowLayout);
+        inhibitSleepAndroid= (CheckBox) findViewById(R.id.inhibitSleepAndroid);
         invert = (CheckBox) findViewById(R.id.invert);
         autoIterateLabel = (TextView) findViewById(R.id.autoIterateLabel);
         auitoiterateSpinner = (SeekBar) findViewById(R.id.auitoiterateSpinner);
@@ -141,6 +143,17 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Settings.getSettings().setAllowScreenChange(allowLayout.isChecked());
+            }
+        });
+
+        inhibitSleepAndroid.setChecked(Settings.getSettings().isSleepInhibited());
+        inhibitSleepAndroid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Settings.getSettings().setSleepInhibited(inhibitSleepAndroid.isChecked());
+                if (RunTraining.hack!=null) {
+                    RunTraining.hack.proceedInhibitSleepAndroid();
+                }
             }
         });
 
@@ -411,6 +424,7 @@ public class AppearenceSettingsActivity extends AppCompatActivity {
         closeButton.setText(SwingTranslator.R("Close"));
         exportButton.setText(SwingTranslator.R("ExportAndroid"));
         allowLayout.setText(SwingTranslator.R("alowScreenChange"));
+        inhibitSleepAndroid.setText(SwingTranslator.R("inhibitSleepAndroid"));
         invert.setText(SwingTranslator.R("invertScreenLayout"));
         this.setTitle(SwingTranslator.R("appearenceTab"));
 

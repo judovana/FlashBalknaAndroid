@@ -87,6 +87,15 @@
             android:layout_below="@+id/exDelete"
 
              />
+        <Button
+            android:text="next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nextGraphs"
+            android:layout_alignLeft="@+id/trDelete"
+            android:layout_below="@+id/trDelete" />
+
+
 
     </RelativeLayout>
 </RelativeLayout>

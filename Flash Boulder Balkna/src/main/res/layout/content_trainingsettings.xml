@@ -32,10 +32,22 @@
         android:weightSum="1">
 
         <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="saveStats"
+            android:id="@+id/saveStats" />
+
+        <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New CheckBox"
             android:id="@+id/mute" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="playLongTermSounds"
+            android:id="@+id/playLongTermSounds" />
 
         <TextView
             android:layout_width="match_parent"

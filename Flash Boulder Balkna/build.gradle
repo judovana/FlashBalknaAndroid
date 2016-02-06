@@ -8,8 +8,8 @@ android {
         applicationId "org.fbb.balkna.android"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 4
-        versionName "1.4"
+        versionCode 5
+        versionName "2.0"
     }
     buildTypes {
         release {

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -46,10 +47,19 @@ import dalvik.system.PathClassLoader;
 
 public class RunTraining extends AppCompatActivity {
 
-    private  RunTraining self;
+    private RunTraining self;
+
+    public void proceedInhibitSleepAndroid() {
+        if (Settings.getSettings().isSleepInhibited()) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
 
     private class OnTouchListenerImpl implements View.OnTouchListener {
         private final ImageView img;
+
         public OnTouchListenerImpl(ImageView src) {
             this.img = src;
         }
@@ -182,7 +192,7 @@ public class RunTraining extends AppCompatActivity {
                     a = super.getView(position, convertView, parent);
                 }
                 if (position == TrainingSelector.run.getIndex()) {
-                    if (Settings.getSettings().getSelectedItemColor()!=null) {
+                    if (Settings.getSettings().getSelectedItemColor() != null) {
                         a.setBackgroundColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getSelectedItemColor()));
                     }
                 } else {
@@ -223,10 +233,10 @@ public class RunTraining extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return;
                 }
-                rightVisibleSavedState=View.GONE;
+                rightVisibleSavedState = View.GONE;
                 trainingItems.setVisibility(View.GONE);
             }
 
@@ -235,10 +245,10 @@ public class RunTraining extends AppCompatActivity {
         description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return;
                 }
-                bottomSavedState=View.GONE;
+                bottomSavedState = View.GONE;
                 imgAndDesc.setVisibility(View.GONE);
 
             }
@@ -369,7 +379,7 @@ public class RunTraining extends AppCompatActivity {
         img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return false;
                 }
                 timerLabel.setBackground(new BitmapDrawable(getResources(), showedImages.get(showedImagesPoint)));
@@ -380,11 +390,11 @@ public class RunTraining extends AppCompatActivity {
         timerLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return;
                 }
-                rightVisibleSavedState=View.VISIBLE;
-                bottomSavedState=View.VISIBLE;
+                rightVisibleSavedState = View.VISIBLE;
+                bottomSavedState = View.VISIBLE;
                 trainingItems.setVisibility(View.VISIBLE);
                 imgAndDesc.setVisibility(View.VISIBLE);
             }
@@ -392,11 +402,11 @@ public class RunTraining extends AppCompatActivity {
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return;
                 }
-                rightVisibleSavedState=View.VISIBLE;
-                bottomSavedState=View.VISIBLE;
+                rightVisibleSavedState = View.VISIBLE;
+                bottomSavedState = View.VISIBLE;
                 trainingItems.setVisibility(View.VISIBLE);
                 imgAndDesc.setVisibility(View.VISIBLE);
             }
@@ -405,7 +415,7 @@ public class RunTraining extends AppCompatActivity {
         timerLabel.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return false;
                 }
                 timerLabel.setBackgroundResource(0);
@@ -416,7 +426,7 @@ public class RunTraining extends AppCompatActivity {
         cross.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (!Settings.getSettings().isAllowScreenChange()){
+                if (!Settings.getSettings().isAllowScreenChange()) {
                     return false;
                 }
                 timerLabel.setBackgroundResource(0);
@@ -456,7 +466,7 @@ public class RunTraining extends AppCompatActivity {
         });
 
 
-        if (Model.getModel().isRatioForced()){
+        if (Model.getModel().isRatioForced()) {
             img.setScaleType(ImageView.ScaleType.FIT_CENTER);
         } else {
             img.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -474,41 +484,41 @@ public class RunTraining extends AppCompatActivity {
         if (
                 (w * h < 800l * 600l && !Settings.getSettings().isInvertScreenCompress())
                         ||
-                (w * h >= 800l * 600l && Settings.getSettings().isInvertScreenCompress())
+                        (w * h >= 800l * 600l && Settings.getSettings().isInvertScreenCompress())
                 ) {
             trainingItems.setVisibility(View.GONE);
             imgAndDesc.setVisibility(View.GONE);
-            if (isImageInTimerSavedState==null) {
+            if (isImageInTimerSavedState == null) {
                 isImageInTimerImpl = true; //not saving state!
-            }else{
+            } else {
                 setIsImageInTimer(isImageInTimerSavedState);
             }
             setMainBg();
-        }else{
-            if (isImageInTimerSavedState==null) {
+        } else {
+            if (isImageInTimerSavedState == null) {
                 isImageInTimerImpl = false; //not saving state!
-            }else{
+            } else {
                 setIsImageInTimer(isImageInTimerSavedState);
             }
             setMainBg();
         }
 
-        if (bottomSavedState!=null){
+        if (bottomSavedState != null) {
             imgAndDesc.setVisibility(bottomSavedState);
         }
-        if (rightVisibleSavedState!=null){
+        if (rightVisibleSavedState != null) {
             trainingItems.setVisibility(rightVisibleSavedState);
         }
-
+        proceedInhibitSleepAndroid();
 
     }
 
-    private void adjustTimrLabel(String s){
+    private void adjustTimrLabel(String s) {
         adjustTimrLabel();
         timerLabel.setText(s);
     }
 
-    public void adjustTimrLabel(){
+    public void adjustTimrLabel() {
         timerLabel.setTextAppearance(this, android.R.style.TextAppearance_Large);
         timerLabel.setTypeface(null, Typeface.BOLD);
 
@@ -517,7 +527,7 @@ public class RunTraining extends AppCompatActivity {
             timerLabel.setTextColor(ImgUtils.javaColorToAndroidColor(Settings.getSettings().getMainTimerColor()));
         } else {
         }
-        if (Settings.getSettings().getMainTimerSize() != null && Settings.getSettings().getMainTimerSize()!=0) {
+        if (Settings.getSettings().getMainTimerSize() != null && Settings.getSettings().getMainTimerSize() != 0) {
             timerLabel.setTextSize(Settings.getSettings().getMainTimerSize());
         } else {
         }
@@ -525,10 +535,10 @@ public class RunTraining extends AppCompatActivity {
         int grav = Gravity.CENTER;
 
         String v = Settings.getSettings().getMainTimerPositionV();
-        if (Settings.VPOS_T.equals(v)){
+        if (Settings.VPOS_T.equals(v)) {
             grav = Gravity.TOP;
         }
-        if (Settings.VPOS_B.equals(v)){
+        if (Settings.VPOS_B.equals(v)) {
             grav = Gravity.BOTTOM;
         }
 
@@ -537,15 +547,15 @@ public class RunTraining extends AppCompatActivity {
             int ali = View.TEXT_ALIGNMENT_CENTER;
 
             String h = Settings.getSettings().getMainTimerPositionH();
-            if (Settings.HPOS_L.equals(h)){
+            if (Settings.HPOS_L.equals(h)) {
                 ali = View.TEXT_ALIGNMENT_VIEW_START;
             }
-            if (Settings.HPOS_R.equals(h)){
+            if (Settings.HPOS_R.equals(h)) {
                 ali = View.TEXT_ALIGNMENT_TEXT_END;
             }
 
             timerLabel.setTextAlignment(ali);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             //older api "noSuchMethod"
         }
 
@@ -570,7 +580,7 @@ public class RunTraining extends AppCompatActivity {
         MenuItem settings = menu.findItem(R.id.action_settings);
         MenuItem appearence = menu.findItem(R.id.action_view);
         MenuItem reset = menu.findItem(R.id.reset_settings);
-        MenuItem statustics= menu.findItem(R.id.statisticsMenuItem);
+        MenuItem statustics = menu.findItem(R.id.statisticsMenuItem);
         statustics.setTitle(SwingTranslator.R("statsTab"));
         reset.setTitle(SwingTranslator.R("resetButton"));
         settings.setTitle(SwingTranslator.R("settingsTab"));
@@ -597,7 +607,7 @@ public class RunTraining extends AppCompatActivity {
 
     public void setTitle() {
         this.setTitle(TrainingSelector.mainsrc.getName());
-        if (TrainingSelector.mainsrc instanceof Cycle){
+        if (TrainingSelector.mainsrc instanceof Cycle) {
             this.setTitle(TrainingSelector.runParent.getName() + " - " + TrainingSelector.mainsrc.getName());
         }
     }
@@ -612,7 +622,7 @@ public class RunTraining extends AppCompatActivity {
             MenuItem settings = menu.findItem(R.id.action_settings);
             MenuItem appearence = menu.findItem(R.id.action_view);
             MenuItem reset = menu.findItem(R.id.reset_settings);
-            MenuItem statustics= menu.findItem(R.id.statisticsMenuItem);
+            MenuItem statustics = menu.findItem(R.id.statisticsMenuItem);
             statustics.setTitle(SwingTranslator.R("statsTab"));
             reset.setTitle(SwingTranslator.R("resetButton"));
             settings.setTitle(SwingTranslator.R("settingsTab"));
@@ -652,7 +662,7 @@ public class RunTraining extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private Cycle isCycle(){
+    private Cycle isCycle() {
         Cycle c = null;
         if (TrainingSelector.mainsrc instanceof Cycle) {
             c = (Cycle) (TrainingSelector.mainsrc);
@@ -663,7 +673,7 @@ public class RunTraining extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         try {
-            if (TrainingSelector.run.getIndex() == TrainingSelector.run.getSrc().size()-1){
+            if (TrainingSelector.run.getIndex() == TrainingSelector.run.getSrc().size() - 1) {
                 RunTraining.super.onBackPressed();
                 TrainingSelector.run.stop();
             } else {

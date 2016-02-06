@@ -48,6 +48,8 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private CheckBox pauseOnChange;
     private CheckBox allowSkipping;
     private CheckBox saveForOfline;
+    private CheckBox saveStats;
+    private CheckBox playLongTermSounds;
     private TextView soundPackLabel;
     private TextView tutorialLabel;
     private TextView cheaterLabel;
@@ -96,6 +98,8 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         allowSkipping = (CheckBox) findViewById(R.id.allowSkipping);
         saveForOfline = (CheckBox) findViewById(R.id.saveForOfline);
         mute = (CheckBox) findViewById(R.id.mute);
+        saveStats = (CheckBox) findViewById(R.id.saveStats);
+        playLongTermSounds = (CheckBox) findViewById(R.id.playLongTermSounds);
         setSoundPackButton = (Button) findViewById(R.id.setSoundPackButton);
         testSoundsButton = (Button) findViewById(R.id.testSoundsButton);
         closeButton = (Button) findViewById(R.id.closeButton);
@@ -139,7 +143,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                     intent.putExtra("CONTENT_TYPE", "*/*");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivityForResult(intent, PICKFILE_REQUEST_CODE);
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
                     // set title
                     alertDialogBuilder.setTitle("Error");
@@ -231,6 +235,21 @@ public class TrainingSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Model.getModel().setLaud(!mute.isChecked());
+            }
+        });
+
+        saveStats.setChecked(Model.getModel().isSaveStats());
+        saveStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Model.getModel().setSaveStats(saveStats.isChecked());
+            }
+        });
+        playLongTermSounds.setChecked(Settings.getSettings().isPlayLongTermSounds());
+        playLongTermSounds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Settings.getSettings().setPlayLongTermSounds(playLongTermSounds.isChecked());
             }
         });
 
@@ -522,6 +541,8 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         downloadButton.setText(SwingTranslator.R("Upload"));
         managePluginsButton.setText(SwingTranslator.R("ManagePlugins"));
         exercisesModLabel.setText(SwingTranslator.R("ExerciseModifiers"));
+        saveStats.setText(SwingTranslator.R("saveStats"));
+        playLongTermSounds.setText(SwingTranslator.R("playLongTermSounds"));
         iterationsModLabel.setText("  - " + SwingTranslator.R("iterationsModifiers") + " " + Model.getModel().getTimeShift().getIterations());
         trainingsModLabel.setText("  - " + SwingTranslator.R("TrainingTimesModifier") + " " + Model.getModel().getTimeShift().getTraining());
         pausesModLabel.setText("  - " + SwingTranslator.R("PauseTimesModifier") + " " + Model.getModel().getTimeShift().getPause());
