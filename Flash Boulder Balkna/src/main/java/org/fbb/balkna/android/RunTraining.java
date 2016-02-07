@@ -608,7 +608,7 @@ public class RunTraining extends AppCompatActivity {
     public void setTitle() {
         this.setTitle(TrainingSelector.mainsrc.getName());
         if (TrainingSelector.mainsrc instanceof Cycle) {
-            this.setTitle(TrainingSelector.runParent.getName() + " - " + TrainingSelector.mainsrc.getName());
+            this.setTitle(TrainingSelector.runParent.getName() + " (" + ((Cycle) TrainingSelector.mainsrc).getTrainingPointerToString() + ") - " + TrainingSelector.mainsrc.getName());
         }
     }
 
