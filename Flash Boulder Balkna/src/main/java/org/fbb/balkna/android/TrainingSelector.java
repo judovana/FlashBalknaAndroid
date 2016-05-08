@@ -190,9 +190,15 @@ public class TrainingSelector extends AppCompatActivity {
                 c = (Cycle) t;
                 c.startCyclesTraining();
                 selectCycle();
+                c.decTrainingPointer();//this is weird. Swing version do not suffer this bug,
+                // but in android, there is somewhere  aditional ++ on trainng pointer
             }
             Intent i = new Intent(getApplicationContext(), RunTraining.class);
             Training training = t.getTraining();
+            if (t instanceof  Cycle){
+                Cycle cc = (Cycle) t;
+                c.incTrainingPointer();// continue fixing bug above
+            }
             List<BasicTime> l = training.getMergedExercises(Model.getModel().getTimeShift()).decompress();
             l.add(0, Model.getModel().getWarmUp());
             if (run != null) {
