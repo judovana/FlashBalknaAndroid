@@ -1,11 +1,11 @@
-Aplikace v součastnosti nabízí lehký, střední a těžký trénink.  Celým tréninkem tě vede hlasový a obrazový průvodce  a s trochou štěstí tě nakopnou na tu správnou tréninkovou vlnu takže už nebudeš žádnou aplikaci potřebovat a bude ti stačit FBB balkna.
+Aplikace v součastnosti nabízí lehký, střední a těžký trénink. Celým tréninkem tě vede hlasový a obrazový průvodce, který tě s trochou štěstí nakopne na tu správnou tréninkovou vlnu, takže už nebudeš žádnou aplikaci potřebovat a bude ti stačit FBB balkna.
 
-Proto je aplikace rozšiřitelná o vlastní tréninky a i bouchači z FBB řasem pčidají nové. Aplikace má všelijaké možnosti od volby halsu, zkrácení či proudloženítréninku či jeho čáastí nebo export tréninku do učebnicové podoby.
+Proto je aplikace rozšiřitelná o vlastní tréninky a i bouchači z FBB časem přidají nové. Aplikace má všelijaké možnosti od volby hlasu, zkrácení či proudložení tréninku, či jeho částí, nebo export tréninku do učebnicové podoby.
 
-Aplikace podporuje češtinu i angličtinu (což nelimituje jazyk vlastních tréninnku) a krom aplikace pro telefon  nabízí i klienta pro pc ( https://github.com/judovana/FlashBalknaSwing) , který má  v sobě barevnou konzolovu - poctivě X-less - textovou verzi pro programátory a šílence.
-Zde se i tvrdě pracuje na editoru vlastních tréninků (nedočkavci si ho hold teď musí napsat c XML a zabalit s obrázky (a dokonce i zvuky pokud chtějí!). Ukázka je https://github.com/judovana/FlashBalknaTestPlugin )
+Aplikace podporuje češtinu i angličtinu (což nelimituje jazyk vlastních tréninků) a krom aplikace pro telefon nabízí i klienta pro pc (https://github.com/judovana/FlashBalknaSwing), který má  v sobě barevnou konzolovou - poctivě X-less - textovou verzi pro programátory a šílence.
+Zde se i tvrdě pracuje na editoru vlastních tréninků (nedočkavci si ho hold teď musí napsat v XML a zabalit s obrázky (a dokonce i zvuky pokud chtějí!)). Ukázka je na https://github.com/judovana/FlashBalknaTestPlugin )
 
-Aplikace může požadovat sítová práva k přístupu na web.  Tyto jsou pouz epro stahování pluginů,  můžete je bez problémů zakázat/odebrat
+Aplikace může požadovat o síťová práva pro přístup na web. Tyto jsou pouze pro stahování pluginů, můžete je bez problémů zakázat/odebrat
 
 
 
