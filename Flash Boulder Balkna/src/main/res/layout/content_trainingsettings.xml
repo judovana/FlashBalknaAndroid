@@ -139,6 +139,14 @@
             android:layout_height="wrap_content"
             android:text="New Button"
             android:id="@+id/selectLocalFile" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/knownPluginsButton" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

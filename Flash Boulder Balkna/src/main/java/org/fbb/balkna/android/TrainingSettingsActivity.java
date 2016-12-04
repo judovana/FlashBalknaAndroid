@@ -63,6 +63,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private Button downloadButton;
     private Button managePluginsButton;
     private Button localPlugin;
+    private Button knownPluginsButton;
     private TextView trainingsModLabel;
     private TextView pausesModLabel;
     private TextView restsModLabel;
@@ -79,6 +80,9 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private static final int PICKFILE_REQUEST_CODE = 9;
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ShowKnownPlugins.result != null) {
+            editText1.setText(ShowKnownPlugins.result);
+        }
         if (data != null) {
             String Fpath = data.getDataString();
             editText1.setText(Fpath);
@@ -119,6 +123,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         singleExerciseOverrideValidation = (TextView) findViewById(R.id.singleExerciseOverrideValidation);
         singleExerciseOverride = (EditText) findViewById(R.id.singleExerciseOverride);
         localPlugin = (Button) findViewById(R.id.selectLocalFile);
+        knownPluginsButton = (Button) findViewById(R.id.knownPluginsButton);
 
         spinner = (Spinner) findViewById(R.id.spinner);
 
@@ -143,6 +148,27 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                     intent.putExtra("CONTENT_TYPE", "*/*");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
                     startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+                } catch (Exception ex) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
+                    // set title
+                    alertDialogBuilder.setTitle("Error");
+                    alertDialogBuilder.setCancelable(true);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage(ex.getMessage());
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+            }
+        });
+
+        knownPluginsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent i = new Intent(getApplicationContext(), ShowKnownPlugins.class);
+                    startActivityForResult(i, 10);
                 } catch (Exception ex) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(self);
                     // set title
@@ -549,6 +575,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         restsModLabel.setText("  - " + SwingTranslator.R("RestTimesModifier") + " " + Model.getModel().getTimeShift().getRest());
         saveForOfline.setText(SwingTranslator.R("SaveForOfline"));
         localPlugin.setText(SwingTranslator.R("localPlugin"));
+        knownPluginsButton.setText(SwingTranslator.R("PPkp"));
         singleExerciseOverrideLabel.setText(SwingTranslator.R("singleTrainingOverride"));
         this.setTitle(SwingTranslator.R("settingsTab"));
 
