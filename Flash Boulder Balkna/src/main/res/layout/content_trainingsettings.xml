@@ -126,6 +126,13 @@
             android:id="@+id/saveForOfline"
             android:checked="true" />
 
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Direct download (will freeze during download, but may overcome some permission issues)"
+            android:id="@+id/directSettingsCheckbox"
+            android:checked="false" />
+
         <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"

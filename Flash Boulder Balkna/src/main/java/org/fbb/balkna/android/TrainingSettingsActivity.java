@@ -3,14 +3,12 @@ package org.fbb.balkna.android;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -32,9 +30,6 @@ import org.fbb.balkna.model.settings.Settings;
 import org.fbb.balkna.swing.locales.SwingTranslator;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 
 public class TrainingSettingsActivity extends AppCompatActivity {
@@ -48,6 +43,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
     private CheckBox pauseOnChange;
     private CheckBox allowSkipping;
     private CheckBox saveForOfline;
+    private CheckBox directDownload;
     private CheckBox saveStats;
     private CheckBox playLongTermSounds;
     private TextView soundPackLabel;
@@ -101,6 +97,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         pauseOnExercise = (CheckBox) findViewById(R.id.pauseOnExercise);
         allowSkipping = (CheckBox) findViewById(R.id.allowSkipping);
         saveForOfline = (CheckBox) findViewById(R.id.saveForOfline);
+        directDownload = (CheckBox) findViewById(R.id.directSettingsCheckbox);
         mute = (CheckBox) findViewById(R.id.mute);
         saveStats = (CheckBox) findViewById(R.id.saveStats);
         playLongTermSounds = (CheckBox) findViewById(R.id.playLongTermSounds);
@@ -363,11 +360,16 @@ public class TrainingSettingsActivity extends AppCompatActivity {
 //                    TrainingSelector.hack.reloadTrainings();
 
                     uri = Uri.parse(editText1.getText().toString());
-                    dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                    DownloadManager.Request request = new DownloadManager.Request(
-                            uri);
-                    request.setTitle(SwingTranslator.R("AndroidDownloadTitle", new File(uri.getPath()).getName()));
-                    enqueue = dm.enqueue(request);
+                    if (directDownload.isChecked()) {
+                        Model.getModel().reload(saveForOfline.isChecked(), new URL(editText1.getText().toString()));
+                        TrainingSelector.hack.reloadTrainings();
+                    } else{
+                        dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                        DownloadManager.Request request = new DownloadManager.Request(
+                                uri);
+                        request.setTitle(SwingTranslator.R("AndroidDownloadTitle", new File(uri.getPath()).getName()));
+                        enqueue = dm.enqueue(request);
+                    }
 
                 } catch (Exception ex) {
                     wasError = ex;
@@ -393,8 +395,13 @@ public class TrainingSettingsActivity extends AppCompatActivity {
                     alertDialogBuilder.setTitle(SwingTranslator.R("AndroidDownloadTitle",  new File(uri.getPath()).getName()));
                     alertDialogBuilder.setCancelable(true);
                     // set dialog message
-                    alertDialogBuilder
-                            .setMessage(SwingTranslator.R("AndroidDownloadMessage", editText1.getText()));
+                    if (directDownload.isChecked()) {
+                        alertDialogBuilder
+                                .setMessage(SwingTranslator.R("AndroidDownloadFinishedMessage", editText1.getText().toString()));
+                    }else {
+                        alertDialogBuilder
+                                .setMessage(SwingTranslator.R("AndroidDownloadMessage", editText1.getText()));
+                    }
                     // create alert dialog
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
