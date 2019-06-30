@@ -584,6 +584,7 @@ public class TrainingSettingsActivity extends AppCompatActivity {
         localPlugin.setText(SwingTranslator.R("localPlugin"));
         knownPluginsButton.setText(SwingTranslator.R("PPkp"));
         singleExerciseOverrideLabel.setText(SwingTranslator.R("singleTrainingOverride"));
+        directDownload.setText(SwingTranslator.R("directDownload"));
         this.setTitle(SwingTranslator.R("settingsTab"));
 
     }
