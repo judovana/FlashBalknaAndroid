@@ -16,7 +16,8 @@
         <activity
             android:name=".TrainingSelector"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,32 +27,39 @@
         <activity
             android:name=".RunTraining"
             android:label="@string/title_activity_run_training"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true" />
         <activity
             android:name=".BrowserActivityTry"
             android:label="@string/title_activity_browser_activity_try"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true" />
         <activity
             android:name=".TrainingSettingsActivity"
             android:label="TrainingSettings"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"/>
         <activity
             android:name=".AppearenceSettingsActivity"
             android:label="AppearenceSettings"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"/>
         <activity
             android:name=".ManagePlugins"
             android:label="@string/title_activity_manage_plugins"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"/>
         <activity
             android:name=".ColorPicker"
             android:label="@string/title_activity_color_picker"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"/>
         <activity
             android:name=".StatisticsTextViewActivity"
             android:label="@string/title_activity_statistics_text_view"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ShowKnownPlugins"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"/>
+        <activity android:name=".ShowKnownPlugins" android:exported="true" ></activity>
     </application>
 
 </manifest>

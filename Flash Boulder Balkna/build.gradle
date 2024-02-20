@@ -1,15 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+
+    namespace = "org.fbb.balkna.android"
+
+
+    compileSdk 33
 
     defaultConfig {
         applicationId "org.fbb.balkna.android"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 33
+        targetSdkVersion 33
+        compileSdk 33
         versionCode 10
-        versionName "2.4"
+        versionName "3.0"
     }
     buildTypes {
         release {
@@ -22,7 +26,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(dir: '../../FlashBalknaModel/dist', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+
 }
